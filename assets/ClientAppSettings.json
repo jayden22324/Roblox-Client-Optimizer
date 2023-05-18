@@ -1,5 +1,5 @@
 {
-"FIntFlagUpdateVersion": 116,
+"FIntFlagUpdateVersion": 117,
 "FStringNewInGameMenuForcedUserIds": "2323539704;3822626535;4126963942;2627408279;4329723352",
 "DFIntSecondsBetweenDynamicVariableReloading": 31557600,
 "FIntRolloutEnrollmentExpirationMinutes": 31557600,
@@ -11,7 +11,7 @@
 "FIntRenderTC2_PercentageRollout": 100,
 "FIntRenderTC2_MaxTextureSize": 1024,
 "FIntTerrainOTAMaxTextureSize": 1024,
-"FIntUITextureMaxRenderTextureSize": 512,
+"FIntUITextureMaxRenderTextureSize": 1024,
 "FFlagLoadCoreScriptsFromPatchOnly": true,
 "FIntMaxCachedPatches": 3,
 "FIntAbuseReportScreenshotMaxSize": 0,
