@@ -39,7 +39,7 @@
 "DFIntGetProductInfoSubscriptionCacheSecs": 60,
 "DFIntGamePassOwnershipCacheSeconds": 60,
 "DFIntPlayerSubscriptionCacheIntervalSeconds": 60,
-"DFIntTaskSchedulerTargetFps": 144,
+"DFIntTaskSchedulerTargetFps": 500,
 "FIntSSAOMipLevels": 0,
 "DFIntJoinDataCompressionLevel": 8,
 "DFIntClusterCompressionLevel": 8,
