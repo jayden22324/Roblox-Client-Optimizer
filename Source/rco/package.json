@@ -1,0 +1,18 @@
+{
+  "name": "rco",
+  "version": "3.0.0",
+  "description": "Automatically applies feature flags to Roblox!",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Kaede",
+  "license": "GPL3",
+  "dependencies": {
+    "center-text": "^0.1.0",
+    "chalk": "^5.2.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
