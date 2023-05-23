@@ -134,7 +134,9 @@ jobs:
       - name: Install dependencies
         run: |
           cd RCO3
-          pnpm install
+          pnpm i
+          pnpm i -D @types/node @types/fs-extra
+          pnpm i fs-extra
       - name: Build
         run: |
           cd RCO3
