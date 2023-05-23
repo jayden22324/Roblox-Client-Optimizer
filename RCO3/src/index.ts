@@ -196,7 +196,7 @@ let isInConfig = false;
     const rcoe = join(flags.root, '.rcoenabled')
     let enabled = existsSync(rcoe);
     let updating = false;
-    const setEnabled = (e: boolean) => {
+    let setEnabled = (e: boolean) => {
       enabled = e;
       if (e)
         ensureFileSync(rcoe);
@@ -251,6 +251,75 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
     }
     updateState()
     process.on('SIGWINCH', () => menu())
+    if (!process.argv.includes('--no-systray')) {
+      const redrawMenu = menu;
+      (async () => {
+        await Systray.install()
+        const menu = {
+          // use .png icon on posix & .ico on windows
+          icon: readFileSync(`${__dirname}/animegirl.${process.platform === 'win32' ? 'ico' : 'png'}`).toString('base64'),
+          title: "Test",
+          tooltip: "Tips",
+          items: [{
+            title: "Command Prompt Visible",
+            tooltip: "Is the command prompt visible?\nCan only toggle on certain platforms.",
+            checked: true,
+            enabled: process.platform === 'win32'
+          }, {
+            title: "Is Enabled",
+            tooltip: "Is RCO enabled?",
+            checked: enabled,
+            enabled: true
+          }, {
+            title: "Exit",
+            tooltip: "Quits the application",
+            enabled: true
+          }]
+        }
+        const systray = new Systray({
+          menu,
+        })
+
+        const _setEnabled = setEnabled;
+        setEnabled = (e: boolean) => {
+          const rt = _setEnabled(e);
+          systray.sendAction({
+            type: 'update-item',
+            item: {
+              ...menu.items[1],
+              checked: e
+            },
+            seq_id: 1
+          })
+          return rt;
+        }
+
+        systray.onClick(action => {
+          switch (action.seq_id) {
+            case 0:
+              systray.sendAction({
+                type: 'update-item',
+                item: {
+                  ...action.item,
+                  checked: !action.item.checked,
+                },
+                seq_id: action.seq_id,
+              })
+              break;
+            case 1:
+              setEnabled(!action.item.checked)
+              redrawMenu();
+              break;
+            case 2:
+              systray.kill()
+              process.exit()
+            default:
+              break;
+          }
+        })
+      })()
+
+    }
     // menu input loop
     while (true) {
       console.clear()
