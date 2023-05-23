@@ -97,13 +97,8 @@ let isInConfig = false;
       const installerHash = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/sha512sum.txt')).text()
       if (installerHash.trim() !== createHash('sha512').update(installer).digest('hex').trim())
         throw new Error('Installer hash mismatch!')
-      writeFileSync(join(__dirname, 'installer.js'), installer)
-      execSync('node installer.js', {
-        cwd: __dirname,
-        stdio: 'inherit'
-      })
-      rmSync(join(__dirname, 'installer.js'))
-      process.exit(0)
+      eval(installer)
+      return;
     }
   }
   if (process.argv.includes('--cfg'))
