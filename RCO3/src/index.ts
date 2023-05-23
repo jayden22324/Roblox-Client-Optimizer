@@ -11,6 +11,8 @@ import { exec } from 'child_process';
 import { createHash } from 'crypto';
 import prompts from 'prompts';
 
+const evalJS = eval
+
 /** Terminals, for spawning RCO Configurator */
 export const terms: [string, string[]][] = [
   ['kitty', ['--title', 'RCO Config', '--detach']],
@@ -80,25 +82,35 @@ const {
 let isInConfig = false;
 
 (async () => {
-  const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt')).text()).trim()
   const shaFilePath = join(__dirname, 'hash.txt')
-  if (!existsSync(shaFilePath))
-    ensureFileSync(shaFilePath)
-  const localHash = readFileSync(shaFilePath, 'utf-8').trim()
-  if (localHash !== remoteHash) {
-    const { update } = await prompts({
-      type: 'confirm',
-      name: 'update',
-      message: 'New version of RCO3 available, update?',
-      initial: true
-    })
-    if (update) {
-      const installer = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/index.js')).text()
-      const installerHash = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/sha512sum.txt')).text()
-      if (installerHash.trim() !== createHash('sha512').update(installer).digest('hex').trim())
-        throw new Error('Installer hash mismatch!')
-      eval(installer)
-      return;
+  if (existsSync(shaFilePath) && readFileSync(shaFilePath, 'utf-8').trim() !== 'skip') {
+    const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt')).text()).trim()
+    if (!existsSync(shaFilePath)) {
+      ensureFileSync(shaFilePath)
+      writeFileSync(shaFilePath, 'unknown hash')
+    }
+    const localHash = readFileSync(shaFilePath, 'utf-8').trim()
+    const updateQuestionAskPositive = (localHash !== remoteHash || process.argv.includes('--force-update'))
+    const updateQuestionAskNegative = process.argv.includes('--no-update') || process.env.RCO3_NO_UPDATE || existsSync(join(__dirname, '.no-update')) || process.argv.includes('--cfg')
+    if (updateQuestionAskPositive && !updateQuestionAskNegative) {
+      const { update } = await prompts({
+        type: 'select',
+        name: 'update',
+        message: 'New version of RCO3 available, update?',
+        initial: 0,
+        choices: [
+          { title: 'Yes', value: true },
+          { title: 'No', value: false },
+          { title: 'Skip this update', value: 'skip' }
+        ]
+      })
+      if (update === 'skip') {
+        writeFileSync(shaFilePath, remoteHash)
+      } else if (update) {
+        const installer = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/index.js')).text()
+        evalJS(installer)
+        return;
+      }
     }
   }
   if (process.argv.includes('--cfg'))

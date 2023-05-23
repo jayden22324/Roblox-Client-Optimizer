@@ -10,7 +10,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "moduleResolution": "nodenext"
   },
   "exclude": [
     "dist/**/*",

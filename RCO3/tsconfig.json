@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
-    "outDir": "./intermediate-dist",
+    "module": "ESNext",
+    // "outDir": "./intermediate-dist",
+    "outDir": ".",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
@@ -10,7 +11,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "resolveJsonModule": true
+    "moduleResolution": "nodenext"
   },
   "exclude": [
     "dist/**/*",
