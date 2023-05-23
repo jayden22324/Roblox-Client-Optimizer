@@ -7,7 +7,7 @@
 const isWin32 = process.platform === "win32"
 if (isWin32) {
     console.log("You downloaded the universal version of RCO, please download the Windows version!")
-    return;
+    process.exit();
 }
 
 import chalk from 'chalk';
