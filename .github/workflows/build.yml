@@ -228,6 +228,7 @@ jobs:
         run: |
           sha512sum RCO.exe > RCOVersion
           sha512sum RCO2Installer.exe > RCO2Installer.hash
+          sha512sum RCO-JS/**/* > RCO-JS/sha512sum.txt
           find . -type f -print0 | xargs -0 sha512sum | sha512sum > deployment.hash
       - name: Create Indexes where missing
         run: |
