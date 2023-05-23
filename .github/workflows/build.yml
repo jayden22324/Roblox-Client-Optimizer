@@ -147,7 +147,7 @@ jobs:
         run: |
           cd RCO3
           mv dist RCO-JS
-          zip RCO.zip RCO-JS
+          zip RCO.zip RCO-JS/**/* RCO-JS/*
           cd ..
           mv RCO3/RCO.zip ./RCO.zip
       - name: Deploy RCO3
