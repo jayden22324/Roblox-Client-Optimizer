@@ -41,16 +41,7 @@
   },
   "targets": {
     "main": {
-      "includeNodeModules": [
-        "@rco3/ttyutil",
-        "fs-extra",
-        "graceful-fs",
-        "jsonfile",
-        "universalify",
-        "semver",
-        "lru-cache",
-        "yallist"
-      ]
+      "includeNodeModules": true
     }
   },
   "@parcel/transformer-js": {

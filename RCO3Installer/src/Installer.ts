@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { existsSync } from 'fs-extra';
 import { TTY as TTYTextConstructor, Ansi as ansi, HTTP } from '@rco3/ttyutil';
 import { exec, execSync } from 'child_process';
 import proc from 'process';
@@ -41,9 +41,17 @@ You may need to rerun as an administrator.`, 'Error')
   }
   /** Launch RCO3 */
   public async launchRCO3() {
-    execSync(path.join(this.RootDir, 'RCO.exe'), {
-      stdio: 'inherit'
-    })
+    if (existsSync(path.join(this.RootDir, 'index.js')))
+      execSync('node index.js', {
+        stdio: 'inherit',
+        cwd: this.RootDir
+      })
+    else if (existsSync(path.join(this.RootDir, 'RCO.exe')))
+      execSync(path.join(this.RootDir, 'RCO.exe'), {
+        stdio: 'inherit'
+      })
+    else
+      throw new Error('RCO not found')
     proc.exit()
   }
   private center(text: string) {

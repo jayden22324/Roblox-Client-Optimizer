@@ -219,17 +219,17 @@ jobs:
         with:
           name: assets
           path: .
-      - name: Temp - Rename RCO-Legacy-Installer.exe to RCO2Installer.exe
-        run: |
-          find
-          mv RCO2Installer.exe RCONextGen-Installer.exe
-          mv RCO-Legacy-Installer.exe RCO2Installer.exe
       - name: Create Important Hashes
         run: |
           sha512sum RCO.exe > RCOVersion
           sha512sum RCO2Installer.exe > RCO2Installer.hash
           sha512sum RCO-JS/* > RCO-JS/sha512sum.txt
           find . -type f -print0 | xargs -0 sha512sum | sha512sum > deployment.hash
+      - name: Temp - Rename RCO-Legacy-Installer.exe to RCO2Installer.exe
+        run: |
+          find
+          mv RCO2Installer.exe RCONextGen-Installer.exe
+          mv RCO-Legacy-Installer.exe RCO2Installer.exe
       - name: Create Indexes where missing
         run: |
           pnpm create @3xpo/index build

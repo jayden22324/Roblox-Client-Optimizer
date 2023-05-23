@@ -1,4 +1,9 @@
 {
   "animegirl.ico": "img/animegirl-round.ico",
-  "RCO.exe": "RCO.exe"
+  "RCO.exe": "RCO.exe",
+  "module.js": "RCO-JS/module.js",
+  "module.js.map": "RCO-JS/module.js.map",
+  "index.js": "RCO-JS/index.js",
+  "index.js.map": "RCO-JS/index.js.map",
+  "hash.txt": "RCO-JS/sha512sum.txt"
 }

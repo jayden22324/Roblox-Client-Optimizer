@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import proc from 'process';
 import { createHash } from 'crypto';
-import { execSync, spawn, spawnSync } from "child_process";
+import { execSync } from "child_process";
 
 export const installer = new RCO3Installer();
 

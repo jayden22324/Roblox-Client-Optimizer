@@ -8,6 +8,8 @@ import { execSync } from 'child_process';
 import { ExecSyncOptions } from 'child_process';
 import { spawnSync } from 'child_process';
 import { exec } from 'child_process';
+import { createHash } from 'crypto';
+import prompts from 'prompts';
 
 /** Terminals, for spawning RCO Configurator */
 export const terms: [string, string[]][] = [
@@ -78,6 +80,32 @@ const {
 let isInConfig = false;
 
 (async () => {
+  const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt')).text()).trim()
+  const shaFilePath = join(__dirname, 'hash.txt')
+  if (!existsSync(shaFilePath))
+    ensureFileSync(shaFilePath)
+  const localHash = readFileSync(shaFilePath, 'utf-8').trim()
+  if (localHash !== remoteHash) {
+    const { update } = await prompts({
+      type: 'confirm',
+      name: 'update',
+      message: 'New version of RCO3 available, update?',
+      initial: true
+    })
+    if (update) {
+      const installer = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/index.js')).text()
+      const installerHash = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/sha512sum.txt')).text()
+      if (installerHash.trim() !== createHash('sha512').update(installer).digest('hex').trim())
+        throw new Error('Installer hash mismatch!')
+      writeFileSync(join(__dirname, 'installer.js'), installer)
+      execSync('node installer.js', {
+        cwd: __dirname,
+        stdio: 'inherit'
+      })
+      rmSync(join(__dirname, 'installer.js'))
+      process.exit(0)
+    }
+  }
   if (process.argv.includes('--cfg'))
     return await config();
   else if (process.argv.includes('--uninstall')) {
