@@ -2,12 +2,6 @@
     RCO3 written in NodeJS by Kaede <3
  */
 
-const isWin32 = process.platform === "win32"
-if (!isWin32) {
-    console.log("You downloaded the Windows version of RCO, please download the universal version!\n(Only difference is the ability to hide the console)")
-    return;
-}
-
 import chalk from 'chalk';
 import centerText from 'center-text';
 import makePrompt from 'prompt-sync';
