@@ -1,0 +1,5 @@
+# applies to this dir & subdirs only
+ClientAppSettings.json.sha512
+ClientAppSettings.json
+docs
+minimal-example.ts

@@ -73,15 +73,83 @@ jobs:
         with:
           name: rco3site
           path: rco-site/build
-  build-rco3:
+  build-librco3:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Zip & Move (temp)
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'LibRCO3/pnpm-lock.yaml'
+      - name: Install dependencies
         run: |
-          touch .temp
-          zip RCO.zip .temp
+          cd LibRCO3
+          pnpm install
+      - name: Build Site
+        run: |
+          cd LibRCO3
+          pnpm build
+      - name: Build Docs
+        run: |
+          cd LibRCO3
+          pnpm build:docs
+      - name: Upload RCO3 Library
+        uses: actions/upload-artifact@v3
+        with:
+          name: librco3-dist
+          path: LibRCO3/dist
+      - name: Upload RCO3 Docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: librco3-docs
+          path: LibRCO3/docs
+  build-rco3:
+    needs: [build-librco3]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download LibRCO3
+        uses: actions/download-artifact@v3
+        with:
+          name: librco3-dist
+          path: LibRCO3/dist
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'RCO3/pnpm-lock.yaml'
+      - name: Install dependencies of LibRCO3
+        run: |
+          cd LibRCO3
+          pnpm i
+      - name: Install dependencies
+        run: |
+          cd RCO3
+          pnpm i
+      - name: Build
+        run: |
+          cd RCO3
+          pnpm build
+      - name: Zip
+        run: |
+          cd RCO3
+          mv dist RCO-JS
+          zip RCO.zip RCO-JS/**/* RCO-JS/*
+          cd ..
+          mv RCO3/RCO.zip ./RCO.zip
       - name: Deploy RCO3
         uses: actions/upload-artifact@v3
         with:
@@ -104,10 +172,19 @@ jobs:
           path: assets
   merge-builds:
     runs-on: ubuntu-latest
-    needs: [build-rco3-installer, build-rco3-site, build-rco3, upload-static]
+    needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static]
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Make Directories
+        run:
+          mkdir lib
       - name: Download RCO3 Site
         uses: actions/download-artifact@v3
         with:
@@ -123,6 +200,16 @@ jobs:
         with:
           name: rco3
           path: .
+      - name: Download LibRCO3
+        uses: actions/download-artifact@v3
+        with:
+          name: librco3-dist
+          path: lib/dist
+      - name: Download LibRCO3 Documentation
+        uses: actions/download-artifact@v3
+        with:
+          name: librco3-docs
+          path: lib/docs
       - name: Unzip
         run: |
           unzip -u RCO.zip
@@ -132,16 +219,20 @@ jobs:
         with:
           name: assets
           path: .
+      - name: Create Important Hashes
+        run: |
+          sha512sum RCO.exe > RCOVersion
+          sha512sum RCO2Installer.exe > RCO2Installer.hash
+          sha512sum RCO-JS/* > RCO-JS/sha512sum.txt
+          find . -type f -print0 | xargs -0 sha512sum | sha512sum > deployment.hash
       - name: Temp - Rename RCO-Legacy-Installer.exe to RCO2Installer.exe
         run: |
           find
           mv RCO2Installer.exe RCONextGen-Installer.exe
           mv RCO-Legacy-Installer.exe RCO2Installer.exe
-      - name: Create Important Hashes
+      - name: Create Indexes where missing
         run: |
-          sha512sum RCO.exe > RCOVersion
-          sha512sum RCO2Installer.exe > RCO2Installer.hash
-          find . -type f -print0 | xargs -0 sha512sum | sha512sum > deployment.hash
+          pnpm create @3xpo/index build
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:

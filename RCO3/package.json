@@ -1,0 +1,64 @@
+{
+  "name": "@rco3/lib",
+  "version": "1.0.2",
+  "description": "RCO3 NodeJS Library",
+  "main": "dist/index.js",
+  "module": "dist/module.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pnpm build:parcel",
+    "build:tsc": "tsc --project tsconfig.json --outDir intermediate-dist --rootDir src",
+    "build:parcel": "parcel build --detailed-report 30 src/index.ts",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "Expo",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.8.3",
+    "@parcel/transformer-typescript-types": "^2.8.3",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.2.3",
+    "@types/prompts": "^2.4.4",
+    "@types/semver": "^7.5.0",
+    "parcel": "^2.8.3",
+    "pkg": "^5.8.1",
+    "resedit-cli": "^2.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@rco3/lib": "link:../LibRCO3",
+    "@rco3/ttyutil": "^1.0.2",
+    "fs-extra": "^11.1.1",
+    "prompts": "^2.4.2"
+  },
+  "targets": {
+    "main": {
+      "includeNodeModules": true
+    }
+  },
+  "@parcel/transformer-js": {
+    "inlineFS": false,
+    "inlineEnvironment": false
+  },
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "targets": [
+      "node18-win-x64",
+      "node18-linux-x64",
+      "node18-macos-x64"
+    ],
+    "outputPath": "bin"
+  },
+  "bin": "dist/index.js",
+  "engines": {
+    "node": ">= 16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/L8X/Roblox-Client-Optimizer.git",
+    "directory": "LibRCO3"
+  }
+}

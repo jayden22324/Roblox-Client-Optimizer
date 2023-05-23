@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { existsSync } from 'fs-extra';
 import { TTY as TTYTextConstructor, Ansi as ansi, HTTP } from '@rco3/ttyutil';
 import { exec, execSync } from 'child_process';
 import proc from 'process';
@@ -41,10 +41,18 @@ You may need to rerun as an administrator.`, 'Error')
   }
   /** Launch RCO3 */
   public async launchRCO3() {
-    execSync(path.join(this.RootDir, 'RCO.exe'), {
-      stdio: 'inherit'
-    })
-    process.exit()
+    if (existsSync(path.join(this.RootDir, 'index.js')))
+      execSync('node index.js', {
+        stdio: 'inherit',
+        cwd: this.RootDir
+      })
+    else if (existsSync(path.join(this.RootDir, 'RCO.exe')))
+      execSync(path.join(this.RootDir, 'RCO.exe'), {
+        stdio: 'inherit'
+      })
+    else
+      throw new Error('RCO not found')
+    proc.exit()
   }
   private center(text: string) {
     return this.TTYText.center(text)
@@ -70,7 +78,7 @@ You may need to rerun as an administrator.`, 'Error')
   getTitleCredits() {
     return this.center(`
 ${ansi.rgb(241, 76, 76)}${ansi.bold()}RCO3 ${ansi.rgb(59, 142, 234)}Installer${ansi.reset()}
-${ansi.rgb(122, 122, 122)}RCO is owned, developed and maintained by Expo and L8X${ansi.reset()}`)
+${ansi.rgb(122, 122, 122)}RCO is owned, developed and maintained by Expo, Kaede and L8X${ansi.reset()}`)
   }
   getFossNotice() {
     return this.center(`${ansi.reset()}${ansi.rgb(122, 122, 122)}If you paid for this software, you have been scammed. RCO is free and open source.
@@ -80,7 +88,7 @@ You can download it (and it's source) at https://rco.simulhost.com/${ansi.reset(
   /** Clear Console */
   private clear() {
     try {
-      console.log('\n'.repeat(process.stdout.rows - 2));
+      console.log('\n'.repeat(proc.stdout.rows - 2));
     } catch (e) {
       console.clear()
     }
