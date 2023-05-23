@@ -131,12 +131,14 @@ jobs:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: 'RCO3/pnpm-lock.yaml'
+      - name: Install dependencies of LibRCO3
+        run: |
+          cd LibRCO3
+          pnpm i
       - name: Install dependencies
         run: |
           cd RCO3
           pnpm i
-          pnpm i -D @types/node @types/fs-extra
-          pnpm i fs-extra
       - name: Build
         run: |
           cd RCO3
