@@ -34,6 +34,12 @@ const commands = [
         "long":"uninstall",
         "short":"u",
         "description":"Uninstalls RCO :("
+    },
+    {
+        "name":"Exit",
+        "long":"exit",
+        "short":"e",
+        "description":"Exit the installer."
     }
 ];
 
@@ -50,20 +56,34 @@ function getMenu() {
 const menu = getMenu();
 
 function main() {
-    console.clear();
-    console.log(menu);
+    while (true) {
+        console.clear();
+        console.log(menu);
 
-    const choice = prompt("Choice: ").toLowerCase();
+        const choice = prompt("Choice: ").toLowerCase();
 
-    if (choice === "i" || choice === "install") { // Installer
-        //todo
-    }
+        switch (choice) {
+            case "i":
+            case "install":
+                //todo
+                break;
 
-    if (choice === "u" || choice === "uninstall") { // Uninstaller
-        //todo
+            case "u":
+            case "uninstall":
+                //todo
+                break;
+
+            case "e":
+            case "exit":
+                process.exit();
+                return;
+
+            default:
+                break;
+        }
     }
 }
 
 main();
 
-console.log("\nProgram is exiting! Bye <3");
+console.log("\nProgram is exiting, most likely due to some error! Bye <3");
