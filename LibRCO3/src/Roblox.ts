@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs, { statSync } from "fs-extra";
 import path from "path";
 import process from "process";
 import { Oof } from "./Oof";
@@ -60,7 +60,7 @@ export class Roblox {
     const versionsDir = p.endsWith('Versions') ? p : path.join(p, 'Versions')
     if (!exists(versionsDir))
       throw new Error('Versions directory does not exist')
-    const versions = fs.readdirSync(versionsDir)
+    const versions = fs.readdirSync(versionsDir).filter(v => exists(path.join(versionsDir, v)) && statSync(path.join(versionsDir, v)).isDirectory())
     if (!versions.length)
       throw new Error('Versions directory is empty')
     if (process.env.NO_STUDIO) {
