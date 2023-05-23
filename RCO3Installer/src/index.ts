@@ -97,7 +97,7 @@ Please either remove your system's NodeJS installation, or upgrade it to at leas
         await installer.addToStartupRegistry()
       }
       installer.printInstallationStep('Copying Self to Directory');
-      if (!__filename.includes('snapshot'))
+      if (__filename.includes('snapshot'))
         installer.copySelf()
       installer.printTitleCredits()
       installer.printLaunchMenu()
