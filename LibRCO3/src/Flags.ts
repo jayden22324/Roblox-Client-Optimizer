@@ -13,11 +13,11 @@ export class RCO3Flags {
   /**
    * where we store shit
    */
-  root: string;
+  root!: string;
   /**
    * overwrites for flags
    */
-  overrides: Record<string, string | number | boolean>;
+  overrides!: Record<string, string | number | boolean>;
   /**
    * list of flags currently in use
    */
@@ -29,10 +29,14 @@ export class RCO3Flags {
   /**
    * the current flag hash/id, excludes overrides
    */
-  flagHash: string;
+  flagHash!: string;
   constructor(overrides: Record<string, string | number | boolean> = {}, root: string = dirname) {
-    this.root = root
-    this.overrides = overrides
+    this.construct(overrides, root);
+  }
+  /** Init function */
+  construct(overrides?: Record<string, string | number | boolean>, root?: string) {
+    this.root = root ?? this.root
+    this.overrides = overrides ?? this.overrides
     this.flagHash = fs.existsSync(path.join(this.root, 'ClientAppSettings.json.sha512')) ? fs.readFileSync(path.join(this.root, 'ClientAppSettings.json.sha512'), 'utf-8').trim() : ''
     this.flags = fs.existsSync(path.join(this.root, 'ClientAppSettings.json')) ? {
       ...JSON.parse(fs.readFileSync(path.join(this.root, 'ClientAppSettings.json'), 'utf-8')),
@@ -66,7 +70,7 @@ export class RCO3Flags {
   }
   /** One-Time Flag List Install */
   async Install(roblox: Roblox = new Roblox()) {
-    await this.updateFlagsList()
+    await this.updateFlagsList(true)
     roblox.setFlags(this.flags)
   }
   /** One-Time Flag List Removal */

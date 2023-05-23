@@ -73,20 +73,6 @@ jobs:
         with:
           name: rco3site
           path: rco-site/build
-  build-rco3:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Zip & Move (temp)
-        run: |
-          touch .temp
-          zip RCO.zip .temp
-      - name: Deploy RCO3
-        uses: actions/upload-artifact@v3
-        with:
-          name: rco3
-          path: RCO.zip
   build-librco3:
     runs-on: ubuntu-latest
     steps:
@@ -124,6 +110,47 @@ jobs:
         with:
           name: librco3-docs
           path: LibRCO3/docs
+  build-rco3:
+    needs: [build-librco3]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download LibRCO3
+        uses: actions/download-artifact@v3
+        with:
+          name: librco3-dist
+          path: LibRCO3/dist
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'RCO3/pnpm-lock.yaml'
+      - name: Install dependencies
+        run: |
+          cd RCO3
+          pnpm install
+      - name: Build
+        run: |
+          cd RCO3
+          pnpm build
+      - name: Zip
+        run: |
+          cd RCO3
+          mv dist RCO-JS
+          zip RCO.zip RCO-JS
+          cd ..
+          mv RCO3/RCO.zip ./RCO.zip
+      - name: Deploy RCO3
+        uses: actions/upload-artifact@v3
+        with:
+          name: rco3
+          path: RCO.zip
   upload-static:
     runs-on: ubuntu-latest
     steps:
@@ -143,6 +170,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static]
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'RCO3Installer/pnpm-lock.yaml'
       - name: Make Directories
         run:
           mkdir lib
@@ -190,6 +227,9 @@ jobs:
           sha512sum RCO.exe > RCOVersion
           sha512sum RCO2Installer.exe > RCO2Installer.hash
           find . -type f -print0 | xargs -0 sha512sum | sha512sum > deployment.hash
+      - name: Create Indexes where missing
+        run: |
+          pnpm create @3xpo/index build
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:

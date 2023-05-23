@@ -70,7 +70,7 @@ You may need to rerun as an administrator.`, 'Error')
   getTitleCredits() {
     return this.center(`
 ${ansi.rgb(241, 76, 76)}${ansi.bold()}RCO3 ${ansi.rgb(59, 142, 234)}Installer${ansi.reset()}
-${ansi.rgb(122, 122, 122)}RCO is owned, developed and maintained by Expo and L8X${ansi.reset()}`)
+${ansi.rgb(122, 122, 122)}RCO is owned, developed and maintained by Expo, Kaede and L8X${ansi.reset()}`)
   }
   getFossNotice() {
     return this.center(`${ansi.reset()}${ansi.rgb(122, 122, 122)}If you paid for this software, you have been scammed. RCO is free and open source.

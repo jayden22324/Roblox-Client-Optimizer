@@ -61,10 +61,12 @@ export class Roblox {
     const versions = fs.readdirSync(versionsDir)
     if (!versions.length)
       throw new Error('Versions directory is empty')
-    const playerVersion = versions.filter(v => fs.existsSync(path.join(versionsDir, v, 'RobloxPlayerBeta.exe')))
-    if (!playerVersion)
-      throw new Error('No RobloxPlayerBeta.exe found in Versions directory')
-    return playerVersion
+    if (process.env.NO_STUDIO) {
+      const playerVersion = versions.filter(v => fs.existsSync(path.join(versionsDir, v, 'RobloxPlayerBeta.exe')))
+      if (!playerVersion)
+        throw new Error('No RobloxPlayerBeta.exe found in Versions directory')
+      return playerVersion
+    } else return versions
   }
   /**
    * {@link GetRobloxVersionsFromPath} but returns the absolute dir path
@@ -145,6 +147,20 @@ export class Roblox {
     ].filter((value, index, self) => unique(value, index, self) && exists(value))
     return newPaths
   }
+  /** Roblox Discovered Listeners */
+  robloxDiscoveredListeners: ((paths: string[]) => void)[] = []
+  /** Adds a Roblox Discovered Listener */
+  addRobloxDiscoveredListener(f: (paths: string[]) => void) {
+    this.robloxDiscoveredListeners.push(f)
+  }
+  /** Removes a Roblox Discovered Listener */
+  removeRobloxDiscoveredListener(f: (paths: string[]) => void) {
+    this.robloxDiscoveredListeners = this.robloxDiscoveredListeners.filter(v => v !== f)
+  }
+  /** Calls all Roblox Discovered Listeners */
+  callRobloxDiscoveredListeners() {
+    this.robloxDiscoveredListeners.forEach(f => f(this.robloxPaths))
+  }
   /**
    * @param {string[]|string} robloxPaths The path to Roblox's Versions Folder
    */
@@ -157,6 +173,7 @@ export class Roblox {
         const newPaths = this.discoverRobloxPaths()
         if ([...robloxPaths ?? [], ...newPaths].filter(unique).length !== robloxPaths?.length ?? -1) {
           this.robloxPaths = newPaths.filter(unique)
+          this.callRobloxDiscoveredListeners()
         }
       }, 2000)
     }
