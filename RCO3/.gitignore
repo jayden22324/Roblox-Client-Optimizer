@@ -3,3 +3,8 @@ ClientAppSettings.json.sha512
 ClientAppSettings.json
 testdir
 hash.txt
+src/*.ico
+src/*.png
+src/*.js
+src/*.map
+src/*.exe

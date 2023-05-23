@@ -1,7 +1,9 @@
-import fs, { existsSync as exists } from "fs-extra";
+import fs from "fs-extra";
 import path from "path";
 import process from "process";
 import { Oof } from "./Oof";
+
+const { existsSync: exists } = fs
 
 const unique = <T>(value: T, index: number, self: T[]): boolean => self.indexOf(value) === index
 

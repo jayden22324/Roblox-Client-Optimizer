@@ -1,6 +1,6 @@
 {
   "name": "@rco3/lib",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "RCO3 NodeJS Library",
   "main": "dist/index.js",
   "module": "dist/module.js",
@@ -26,6 +26,7 @@
     "pkg": "^5.8.1",
     "resedit-cli": "^2.0.0",
     "ts-node": "^10.9.1",
+    "tslib": "^2.5.2",
     "typedoc": "^0.24.7",
     "typescript": "^5.0.4"
   },

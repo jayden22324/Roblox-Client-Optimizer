@@ -2,15 +2,15 @@
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
-    "outDir": "./intermediate-dist",
+    // "outDir": "./intermediate-dist",
+    "outDir": ".",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
-    "resolveJsonModule": true
+    "declarationMap": true
   },
   "exclude": [
     "dist/**/*",
