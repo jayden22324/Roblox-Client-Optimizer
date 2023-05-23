@@ -6,17 +6,25 @@ import commonjs from '@rollup/plugin-commonjs';
 /** @type {import('rollup').RollupOptions} */
 export default {
   input: 'src/index.ts',
-  output: {
-    // out file
-    file: 'dist/index.js',
-    // cjs
-    format: 'cjs',
-    // inline dynamic imports
-    inlineDynamicImports: true,
-    // no dynamic imports in cjs
-    dynamicImportInCjs: false,
-    // sourcemap
-    sourcemap: true,
-  },
-  plugins: [commonjs(), nodeResolve(), typescript(),]
+  output: [
+    {
+      file: 'dist/index.js',
+      format: 'cjs',
+      sourcemap: true,
+      inlineDynamicImports: true,
+      dynamicImportInCjs: false
+    },
+    {
+      file: 'dist/module.js',
+      format: 'esm',
+      sourcemap: true,
+      inlineDynamicImports: true,
+    }
+  ],
+  plugins: [commonjs(), nodeResolve(), typescript({
+    declaration: true,
+    declarationDir: "dist",
+    declarationMap: true,
+    module: 'esnext',
+  }),]
 };

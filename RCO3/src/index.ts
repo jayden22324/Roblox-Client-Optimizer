@@ -1,29 +1,26 @@
 import { RCO3 } from '@rco3/lib';
 import { Ansi, TTY } from '@rco3/ttyutil'
 import { ensureFileSync, existsSync, readFileSync, rmSync, watch, writeFileSync } from 'fs-extra';
-import { join } from 'path';
-import process from 'process';
+import { join } from 'node:path';
+import process from 'node:process';
 import config from './config';
-import { execSync } from 'child_process';
-import { ExecSyncOptions } from 'child_process';
-import { spawnSync } from 'child_process';
-import { exec } from 'child_process';
-import { createHash } from 'crypto';
+import { exec, execSync, ExecSyncOptions, spawnSync } from 'node:child_process';
 import prompts from 'prompts';
+import Systray from '@3xpo/systray';
 
 const evalJS = eval
 
 /** Terminals, for spawning RCO Configurator */
-export const terms: [string, string[]][] = [
-  ['kitty', ['--title', 'RCO Config', '--detach']],
-  ['lxterminal', ['-e']],
-  ['xfce4-terminal', ['--title', 'RCO Config', '-e']],
-  ['konsole', ['-e']],
-  ['cmd', ['/c']],
-  ['powershell', ['-c']],
-  ['lxterm', ['-bg', 'black', '-fg', 'white', '-e']],
-  ['uxterm', ['-bg', 'black', '-fg', 'white', '-e']],
-  ['xterm', ['-bg', 'black', '-fg', 'white', '-e']],
+export const terms: [string, string[], boolean][] = [
+  ['kitty', ['--title', 'RCO Config', '--detach', '/usr/bin/bash', '-c'], false],
+  ['lxterminal', ['-e'], false],
+  ['xfce4-terminal', ['--title', 'RCO Config', '-e'], false],
+  ['konsole', ['-e'], false],
+  ['cmd', ['/c'], false],
+  ['powershell', ['-c'], false],
+  ['lxterm', ['-bg', 'black', '-fg', 'white', '-e'], false],
+  ['uxterm', ['-bg', 'black', '-fg', 'white', '-e'], false],
+  ['xterm', ['-bg', 'black', '-fg', 'white', '-e'], false],
 ]
 /** Spawning terminals on macos is painful */
 export const macSpawnTerminal = (cmd: string, cwd = process.cwd()) => {
@@ -82,6 +79,16 @@ const {
 let isInConfig = false;
 
 (async () => {
+  console.log('Preparing...');
+  let ok = false;
+  while (!ok)
+    try {
+      ok = (await fetch('https://roblox-client-optimizer.simulhost.com/')).ok
+    } catch (error) {
+      console.warn('Failed to connect to RCO server, retrying in 5 seconds...');
+      await new Promise(r => setTimeout(r, 5000));
+    }
+  await Systray.install();
   const shaFilePath = join(__dirname, 'hash.txt')
   if (existsSync(shaFilePath) && readFileSync(shaFilePath, 'utf-8').trim() !== 'skip') {
     const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt')).text()).trim()
@@ -113,8 +120,18 @@ let isInConfig = false;
       }
     }
   }
-  if (process.argv.includes('--cfg'))
+  const files = await (await fetch('https://roblox-client-optimizer.simulhost.com/files.json')).json()
+  for (const file of Object.keys(files)) {
+    if (!existsSync(join(__dirname, file)) && !file.endsWith('.js') && !file.endsWith('.map') && file !== 'hash.txt' && !file.endsWith('.exe')) {
+      console.log(`Downloading missing file ${file}...`);
+      ensureFileSync(join(__dirname, file))
+      writeFileSync(join(__dirname, file), Buffer.from(await (await fetch(`https://roblox-client-optimizer.simulhost.com/${file}`)).arrayBuffer()))
+    }
+  }
+  if (process.argv.includes('--cfg')) {
+    console.clear()
     return await config();
+  }
   else if (process.argv.includes('--uninstall')) {
     // uninstall
     console.log('Uninstalling...');
@@ -268,13 +285,13 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
           isInConfig = false;
           break;
         case 'c': {
-          const cmd = `${__filename.endsWith('.ts') ? 'ts-' : ''}node "${__filename}" --cfg`
+          const cmd = [`${__filename.endsWith('.ts') ? 'ts-' : ''}node`, __filename, `--cfg`]
           switch (process.platform) {
             case 'win32':
               const random = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
               const file = join(process.env['TEMP'] ?? process.cwd(), 'RCO_' + random + '.bat')
               writeFileSync(file, `@echo off
-${cmd}
+${cmd.map(v => `"${v}"`).join(' ')}
 `)
               exec(`start cmd /c "${file}"`, (err, stdout, stderr) => {
                 rmSync(file)
@@ -286,7 +303,10 @@ ${cmd}
                 process.env['PATH']!.split(':').filter(v => existsSync(join(v, term))).length > 0
               )
               if (term) {
-                spawnSync(term[0], [...term[1], cmd], {
+                spawnSync(term[0], [
+                  ...term[1],
+                  ...(term[2] ? cmd : [cmd.map(v => `"${v}"`).join(' ')])
+                ], {
                   cwd: process.cwd(),
                 })
               } else throw new Error('No terminal found! Press shift+c to use this process\'s terminal')
