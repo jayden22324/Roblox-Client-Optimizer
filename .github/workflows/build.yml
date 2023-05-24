@@ -169,7 +169,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: RCO3Launcher/target
-          key: ${{ matrix.os }}-rco-launcher-rust-target-cache
+          key: ${{ matrix.os }}-rco-launcher-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache Rust Target
+        id: rust-launcher-homecargo-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo
+          key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('**/Cargo.lock') }}
       - name: Build Linux
         if: matrix.os == 'linux'
         run: |
