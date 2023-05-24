@@ -175,7 +175,7 @@ jobs:
       - name: Install Cross-Compilers
         run: |
           sudo apt update
-          sudo apt install gcc-aarch64-linux-gnu g++-multilib -y
+          sudo apt install gcc-aarch64-linux-gnu -y
       - name: Build
         run: |
           mkdir deploy
