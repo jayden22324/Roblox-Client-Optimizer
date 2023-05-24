@@ -27,8 +27,8 @@ if (!fs.existsSync('./bin'))
 if (!fs.existsSync('./bin/rco3-launcher'))
   fs.mkdirSync('./bin/rco3-launcher');
 
-const cmd = (platform, arch, posDependent) => `go build -v -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}"${posDependent ? ' -ldflags=\'-no-pie -linkmode external -extldflags "-static"\'' : ''} main.go`
-const run = (cmd, plat, arch, i, a) => {
+const cmd = (platform, arch, retry) => `go build -v -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}" main.go`
+const run = (cmd, plat, arch, i, a, retry) => {
   console.log(`\x1B[90m[\x1B[92m${i}/${a}\x1B[90m] \x1B[94m$\x1B[0m ${cmd}`);
   execSync(cmd, {
     cwd: process.cwd(),
@@ -37,13 +37,14 @@ const run = (cmd, plat, arch, i, a) => {
       ...process.env,
       GOOS: plat,
       GOARCH: arch,
+      CGO_ENABLED: retry ? '0' : '1',
     }
   })
 }
 matrix.forEach(([plat, arch], i, a) => {
   try {
-    run(cmd(plat, arch, false), plat, arch, i, a.length - 1,)
+    run(cmd(plat, arch, false), plat, arch, i, a.length - 1, false)
   } catch (error) {
-    run(cmd(plat, arch, true), plat, arch, i, a.length - 1,)
+    run(cmd(plat, arch, true), plat, arch, i, a.length - 1, true)
   }
 })
