@@ -19,7 +19,7 @@ const comb = (arrays) => {
 const isGithub = process.argv.includes('githubactions');
 
 const matrix = [
-  ...comb([['linux'], ['amd64', isGithub ? null : 'arm64', '386'].filter(v => v)]),
+  ...comb([['linux'], ['amd64', isGithub ? null : 'arm64', isGithub ? null : '386'].filter(v => v)]),
   ...comb([['windows'], ['amd64', '386']]),
   ...comb([['darwin'], ['amd64', 'arm64']])
 ];
