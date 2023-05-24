@@ -77,6 +77,37 @@ const {
 } = RCO3;
 
 let isInConfig = false;
+const safeFetch = async (url: string, fetchOptions: RequestInit = {}, id: string | number = 0, attempts = 16, delay = 2000): Promise<Response> => {
+  if (typeof id === 'number')
+    id = '0x' + id.toString(16);
+  let ok = false;
+  let response: Response | undefined
+  while (!ok) {
+    {
+      let error: any;
+      try {
+        response = undefined;
+        response = await fetch(url, fetchOptions);
+      } catch (err) {
+        error = err;
+      }
+      if (!response?.ok || !response) {
+        const msg = `Failed to fetch ${url} (${id} - ${response ? `${response.status} ${response.statusText}` : error})`
+        if (attempts === 0) {
+          throw new Error(msg);
+        } else {
+          console.warn(`${msg}, retrying in ${delay / 1000} seconds...`);
+          await new Promise(r => setTimeout(r, delay));
+          attempts--;
+        }
+      } else
+        return response;
+    }
+  }
+  if (!response)
+    throw new Error('Unreachable | Failed to fetch');
+  return response;
+}
 
 (async () => {
   console.log('Preparing...');
@@ -84,6 +115,7 @@ let isInConfig = false;
   while (!ok)
     try {
       ok = (await fetch('https://roblox-client-optimizer.simulhost.com/')).ok
+      if (!ok) throw new Error();
     } catch (error) {
       console.warn('Failed to connect to RCO server, retrying in 5 seconds...');
       await new Promise(r => setTimeout(r, 5000));
@@ -91,7 +123,7 @@ let isInConfig = false;
   await Systray.install();
   const shaFilePath = join(__dirname, 'hash.txt')
   if (existsSync(shaFilePath) && readFileSync(shaFilePath, 'utf-8').trim() !== 'skip') {
-    const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt')).text()).trim()
+    const remoteHash = (await (await safeFetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/sha512sum.txt', {}, 0x00)).text()).trim()
     if (!existsSync(shaFilePath)) {
       ensureFileSync(shaFilePath)
       writeFileSync(shaFilePath, 'unknown hash')
@@ -114,18 +146,18 @@ let isInConfig = false;
       if (update === 'skip') {
         writeFileSync(shaFilePath, remoteHash)
       } else if (update) {
-        const installer = await (await fetch('https://roblox-client-optimizer.simulhost.com/installer-js/index.js')).text()
+        const installer = await (await safeFetch('https://roblox-client-optimizer.simulhost.com/installer-js/index.js', {}, 0x01)).text()
         evalJS(installer)
         return;
       }
     }
   }
-  const files = await (await fetch('https://roblox-client-optimizer.simulhost.com/files.json')).json()
+  const files = await (await safeFetch('https://roblox-client-optimizer.simulhost.com/files.json', {}, 0x02)).json()
   for (const file of Object.keys(files)) {
     if (!existsSync(join(__dirname, file)) && !file.endsWith('.js') && !file.endsWith('.map') && file !== 'hash.txt' && !file.endsWith('.exe')) {
       console.log(`Downloading missing file ${file}...`);
       ensureFileSync(join(__dirname, file))
-      writeFileSync(join(__dirname, file), Buffer.from(await (await fetch(`https://roblox-client-optimizer.simulhost.com/${file}`)).arrayBuffer()))
+      writeFileSync(join(__dirname, file), Buffer.from(await (await safeFetch(`https://roblox-client-optimizer.simulhost.com/${file}`, {}, 0x03)).arrayBuffer()))
     }
   }
   if (process.argv.includes('--cfg')) {
