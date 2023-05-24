@@ -26,7 +26,7 @@ if (!fs.existsSync('./bin'))
 if (!fs.existsSync('./bin/rco3-launcher'))
   fs.mkdirSync('./bin/rco3-launcher');
 
-const cmd = (platform, arch, posDependent) => `go build -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}"${posDependent ? ' -buildmode=exe' : ''} main.go`
+const cmd = (platform, arch, posDependent) => `go build -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}"${posDependent ? ' -ldflags="-linkmode external"' : ''} main.go`
 matrix.forEach(([plat, arch], i, a) => {
   try {
     console.log(`\x1B[90m[\x1B[92m${i}/${a.length - 1}\x1B[90m] \x1B[94m$\x1B[0m ${cmd(plat, arch)}`);
