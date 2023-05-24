@@ -9,3 +9,10 @@ reqwest = { version = "0.11.18", features = ["blocking", "json"] }
 [[bin]]
 name = "rco3launcher"
 path = "src/main.rs"
+
+[package.metadata]
+icons = [
+  { file = "icon.png", target = "linux" },
+  { file = "icon.ico", target = "windows" },
+  { file = "icon.png", target = "macos" },
+]
