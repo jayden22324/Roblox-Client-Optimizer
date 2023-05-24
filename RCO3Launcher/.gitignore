@@ -1,0 +1,6 @@
+target
+*.lock
+*.ico
+*.png
+index.js
+.rco*
