@@ -157,41 +157,47 @@ jobs:
           path: RCO.zip
   build-rco3-launcher:
     # use matrix for os
-    runs-on: ${{matrix.os}}
+    runs-on: ${{matrix.os == 'linux' && 'ubuntu-latest' || matrix.os == 'macos-intel' && 'macos-latest' || matrix.os == 'macos-apple' && 'macos-latest' || matrix.os == 'windows' && 'windows-latest'}}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-latest-xl, windows-latest]
+        os: [linux, macos-intel, macos-apple, windows]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build Linux
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'linux'
         run: |
           cd RCO3Launcher
           rustup target add x86_64-unknown-linux-gnu
           cargo build --release --target x86_64-unknown-linux-gnu
       - name: Build Windows
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows'
         run: |
           cd RCO3Launcher
           rustup target add x86_64-pc-windows-gnu
           cargo build --release --target x86_64-pc-windows-gnu
       - name: Build Mac (Intel x86_64)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-intel'
         run: |
           cd RCO3Launcher
           rustup target add x86_64-apple-darwin
           cargo build --release --target x86_64-apple-darwin
       - name: Build Mac (Apple Silicon)
-        if: matrix.os == 'macos-latest-xl'
+        if: matrix.os == 'macos-apple'
         run: |
           cd RCO3Launcher
           rustup target add aarch64-apple-darwin
           cargo build --release --target aarch64-apple-darwin
-      - name: Find (temp)
+      - name: Upload RCO3 Launcher
+        if: matrix.os != 'windows'
         run: |
           cd RCO3Launcher
-          find .
+          ls target/release
+      - name: Upload RCO3 Launcher
+        if: matrix.os == 'windows'
+        run: |
+          cd RCO3Launcher
+          dir target/release
   upload-static:
     runs-on: ubuntu-latest
     steps:
