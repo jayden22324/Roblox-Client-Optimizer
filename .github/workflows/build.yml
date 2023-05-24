@@ -196,7 +196,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: rco3launcher-${{matrix.os}}
-          path: rco3launcher-*
+          path: RCO3Launcher/rco3launcher-*
   upload-static:
     runs-on: ubuntu-latest
     steps:
