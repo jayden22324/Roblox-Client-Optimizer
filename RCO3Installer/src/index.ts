@@ -21,7 +21,27 @@ ${Object.keys(proc.versions).map(v => ` ${v}: ${proc.versions[v]}`).join('\n')}`
 
 (async () => {
   // get sha512 hash of process.execPath
-  console.log('Checking for updates...');
+  console.log(`\x1b[49m                                                                                                                        \x1b[m
+\x1b[49m                                                                                                                        \x1b[m
+\x1b[49m      \x1b[48;5;124m  \x1b[49m  \x1b[48;5;9m        \x1b[49m                                                                                                      \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m                  \x1b[48;5;160m  \x1b[49m                                                                                              \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m                      \x1b[49m                          \x1b[48;5;9m                \x1b[49m                          \x1b[48;5;160m  \x1b[48;5;9m    \x1b[48;5;160m  \x1b[48;5;9m  \x1b[49m              \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m      \x1b[48;5;124m  \x1b[48;5;160m  \x1b[48;5;9m              \x1b[49m                    \x1b[48;5;9m                    \x1b[48;5;160m  \x1b[49m                  \x1b[48;5;9m                  \x1b[48;5;160m  \x1b[49m          \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m      \x1b[48;5;124m            \x1b[48;5;9m      \x1b[48;5;124m  \x1b[49m                \x1b[48;5;9m                      \x1b[49m                  \x1b[48;5;9m                      \x1b[48;5;160m  \x1b[49m        \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m      \x1b[48;5;124m    \x1b[49m          \x1b[48;5;9m    \x1b[48;5;124m    \x1b[49m            \x1b[48;5;9m                \x1b[48;5;124m  \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m                \x1b[48;5;9m                          \x1b[49m        \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m      \x1b[48;5;124m    \x1b[49m        \x1b[48;5;9m      \x1b[48;5;160m  \x1b[48;5;124m  \x1b[49m          \x1b[48;5;160m  \x1b[48;5;9m          \x1b[48;5;124m            \x1b[49m                \x1b[48;5;9m            \x1b[48;5;124m          \x1b[48;5;9m        \x1b[49m      \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m      \x1b[48;5;124m      \x1b[49m    \x1b[48;5;9m        \x1b[48;5;124m    \x1b[49m          \x1b[48;5;9m          \x1b[48;5;124m    \x1b[49m                        \x1b[48;5;124m  \x1b[48;5;9m          \x1b[49m        \x1b[48;5;124m      \x1b[48;5;9m      \x1b[49m      \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m                        \x1b[48;5;124m    \x1b[49m        \x1b[48;5;160m  \x1b[48;5;9m        \x1b[48;5;124m    \x1b[49m                          \x1b[48;5;124m  \x1b[48;5;9m          \x1b[49m          \x1b[48;5;124m      \x1b[48;5;9m    \x1b[49m      \x1b[m
+\x1b[49m    \x1b[48;5;160m  \x1b[48;5;9m                    \x1b[48;5;124m      \x1b[49m          \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m                            \x1b[48;5;124m  \x1b[48;5;9m          \x1b[49m            \x1b[48;5;124m  \x1b[48;5;9m      \x1b[48;5;160m  \x1b[49m    \x1b[m
+\x1b[49m    \x1b[48;5;9m                      \x1b[48;5;124m    \x1b[49m            \x1b[48;5;9m          \x1b[49m                              \x1b[48;5;124m  \x1b[48;5;9m          \x1b[49m          \x1b[48;5;124m    \x1b[48;5;9m      \x1b[48;5;160m  \x1b[49m    \x1b[m
+\x1b[49m    \x1b[48;5;9m            \x1b[48;5;124m  \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m            \x1b[48;5;160m  \x1b[48;5;9m        \x1b[49m                              \x1b[48;5;124m  \x1b[48;5;9m            \x1b[48;5;124m  \x1b[48;5;9m                \x1b[49m      \x1b[m
+\x1b[49m    \x1b[48;5;9m        \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m  \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m            \x1b[48;5;9m          \x1b[49m                            \x1b[48;5;124m  \x1b[48;5;9m                            \x1b[49m        \x1b[m
+\x1b[49m    \x1b[48;5;9m        \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m    \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m          \x1b[48;5;160m  \x1b[48;5;9m                          \x1b[49m          \x1b[48;5;124m  \x1b[48;5;9m                        \x1b[49m            \x1b[m
+\x1b[49m    \x1b[48;5;9m        \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m      \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m          \x1b[48;5;160m  \x1b[48;5;9m                          \x1b[49m          \x1b[48;5;124m    \x1b[48;5;9m                \x1b[49m                \x1b[m
+\x1b[49m    \x1b[48;5;9m        \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m      \x1b[48;5;160m  \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m              \x1b[48;5;9m                  \x1b[48;5;160m  \x1b[49m                  \x1b[48;5;124m    \x1b[48;5;9m    \x1b[49m                      \x1b[m
+\x1b[49m    \x1b[48;5;9m        \x1b[48;5;160m  \x1b[48;5;124m    \x1b[49m        \x1b[48;5;9m          \x1b[48;5;124m  \x1b[49m                                                                                  \x1b[m
+\x1b[49m                            \x1b[48;5;160m    \x1b[48;5;124m  \x1b[49m                                                                                      \x1b[m
+Checking for updates...`);
   const hash = createHash('sha512').update(fs.readFileSync(proc.execPath)).digest('hex')
   const remoteHash = (await (await fetch('https://roblox-client-optimizer.simulhost.com/RCO2Installer.hash')).text()).split(' ')[0]
   if (hash !== remoteHash) {
