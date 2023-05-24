@@ -174,7 +174,8 @@ jobs:
           node-version: 20
       - name: Install Cross-Compilers
         run: |
-          sudo apt install gcc-multilib g++-multilib -y
+          sudo apt update
+          sudo apt install gcc-multilib g++-multilib --fix-missing -y
       - name: Build
         run: |
           mkdir deploy
