@@ -16,7 +16,7 @@ const comb = (arrays) => {
   return first.flatMap(x => combinations.map(y => [x, ...y]));
 }
 
-const isGithub = !!process.env.GITHUB_TOKEN;
+const isGithub = process.argv.includes('githubactions');
 
 const matrix = [
   ...comb([['linux'], ['amd64', isGithub ? null : 'arm64', '386'].filter(v => v)]),

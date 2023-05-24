@@ -182,7 +182,7 @@ jobs:
           mkdir deploy/RCO3Launcher
           mkdir -p RCO3Launcher/dist/
           cd RCO3Launcher
-          node build
+          node build githubactions
       - name: Prepare Deploy Dir
         run: |
           mv RCO3Launcher/dist/ deploy/RCO3Launcher/bin/
