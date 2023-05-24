@@ -177,13 +177,6 @@ jobs:
           rustup target add x86_64-unknown-linux-gnu
           cargo build --release --target x86_64-unknown-linux-gnu
           mv target/x86_64-unknown-linux-gnu/release/rco3launcher ./rco3launcher-linux-x86_64
-      - name: Build Windows
-        if: matrix.os == 'windows'
-        run: |
-          cd RCO3Launcher
-          rustup target add x86_64-pc-windows-gnu
-          cargo build --release --target x86_64-pc-windows-gnu
-          move target/x86_64-pc-windows-gnu/release/rco3launcher.exe rco3launcher-win32-x86_64.exe
       - name: Build Mac (Intel x86_64)
         if: matrix.os == 'macos-intel'
         run: |
@@ -198,6 +191,13 @@ jobs:
           rustup target add aarch64-apple-darwin
           cargo build --release --target aarch64-apple-darwin
           mv target/aarch64-apple-darwin/release/rco3launcher ./rco3launcher-darwin-arm64
+      - name: Build Windows
+        if: matrix.os == 'windows'
+        run: |
+          cd RCO3Launcher
+          rustup target add x86_64-pc-windows-gnu
+          cargo build --release --target x86_64-pc-windows-gnu
+          move target/x86_64-pc-windows-gnu/release/rco3launcher.exe rco3launcher-win32-x86_64.exe
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
