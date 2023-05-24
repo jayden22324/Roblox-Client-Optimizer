@@ -164,13 +164,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache Rust Target
+      - name: Cache RCO3Launcher -> Target
         id: rust-launcher-cache
         uses: actions/cache@v3
         with:
           path: RCO3Launcher/target
           key: ${{ matrix.os }}-rco-launcher-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache Rust Target
+      - name: Cache Home -> Cargo
         id: rust-launcher-homecargo-cache
         uses: actions/cache@v3
         with:
