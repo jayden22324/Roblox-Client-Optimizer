@@ -4,3 +4,5 @@ target
 *.png
 index.js
 .rco*
+!icon.ico
+!icon.png
