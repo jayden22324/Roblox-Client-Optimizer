@@ -27,7 +27,7 @@ if (!fs.existsSync('./bin'))
 if (!fs.existsSync('./bin/rco3-launcher'))
   fs.mkdirSync('./bin/rco3-launcher');
 
-const cmd = (platform, arch, posDependent) => `go build -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}"${posDependent ? ' -ldflags="-no-pie"' : ''} main.go`
+const cmd = (platform, arch, posDependent) => `go build -v -o "bin/rco3-launcher/${platform}-${arch}${platform === 'windows' ? '.exe' : ''}"${posDependent ? ' -ldflags="-no-pie"' : ''} main.go`
 const run = (cmd, plat, arch, i, a) => {
   console.log(`\x1B[90m[\x1B[92m${i}/${a}\x1B[90m] \x1B[94m$\x1B[0m ${cmd}`);
   execSync(cmd, {
