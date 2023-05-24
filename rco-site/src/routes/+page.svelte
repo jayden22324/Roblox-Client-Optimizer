@@ -13,7 +13,13 @@
 <main>
   <section class="top" style="display:flex">
     <div>
-      <img src="/rco.png" alt="RCO" style="max-height: 6em" />
+      <img
+        src="/rco.png"
+        alt="RCO"
+        style="max-height:6em;height:192px;height:96px;"
+        width="192"
+        height="96"
+      />
       <h1>Roblox Client Optimizer</h1>
       <p>A tool to optimize Roblox's client</p>
       <div style="opacity: 0.7">
