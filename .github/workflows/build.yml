@@ -164,12 +164,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache Rust Target
+      - name: Cache RCO3Launcher -> Target
         id: rust-launcher-cache
         uses: actions/cache@v3
         with:
           path: RCO3Launcher/target
-          key: ${{ matrix.os }}-rco-launcher-rust-target-cache
+          key: ${{ matrix.os }}-rco-launcher-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache Home -> Cargo
+        id: rust-launcher-homecargo-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo
+          key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('**/Cargo.lock') }}
       - name: Build Linux
         if: matrix.os == 'linux'
         run: |
@@ -177,13 +183,6 @@ jobs:
           rustup target add x86_64-unknown-linux-gnu
           cargo build --release --target x86_64-unknown-linux-gnu
           mv target/x86_64-unknown-linux-gnu/release/rco3launcher ./rco3launcher-linux-x86_64
-      - name: Build Windows
-        if: matrix.os == 'windows'
-        run: |
-          cd RCO3Launcher
-          rustup target add x86_64-pc-windows-gnu
-          cargo build --release --target x86_64-pc-windows-gnu
-          move target/x86_64-pc-windows-gnu/release/rco3launcher.exe rco3launcher-win32-x86_64.exe
       - name: Build Mac (Intel x86_64)
         if: matrix.os == 'macos-intel'
         run: |
@@ -198,6 +197,13 @@ jobs:
           rustup target add aarch64-apple-darwin
           cargo build --release --target aarch64-apple-darwin
           mv target/aarch64-apple-darwin/release/rco3launcher ./rco3launcher-darwin-arm64
+      - name: Build Windows
+        if: matrix.os == 'windows'
+        run: |
+          cd RCO3Launcher
+          rustup target add x86_64-pc-windows-gnu
+          cargo build --release --target x86_64-pc-windows-gnu
+          move target/x86_64-pc-windows-gnu/release/rco3launcher.exe rco3launcher-win32-x86_64.exe
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
@@ -304,6 +310,10 @@ jobs:
         with:
           name: assets
           path: .
+      - name: Copy icons
+        run:
+          cp img/animegirl-round.ico animegirl.ico
+          cp img/animegirl-round.png animegirl.png
       - name: Create Important Hashes
         run: |
           sha512sum RCO.exe > RCOVersion
