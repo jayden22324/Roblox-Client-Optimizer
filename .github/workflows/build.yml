@@ -174,12 +174,12 @@ jobs:
           node-version: 20
       - name: Build
         run: |
-          cd RCO3Launcher
-          node build
-      - name: Prepare Deploy Dir
-        run: |
           mkdir deploy
           mkdir deploy/RCO3Launcher
+          cd RCO3Launcher
+          node build | tee deployy/RCO3Launcher/build.log
+      - name: Prepare Deploy Dir
+        run: |
           mv RCO3Launcher/dist/ deploy/RCO3Launcher/bin/
           mv RCO3Launcher/main.go deploy/RCO3Launcher/main.go
           mv RCO3Launcher/build.js deploy/RCO3Launcher/build.js
