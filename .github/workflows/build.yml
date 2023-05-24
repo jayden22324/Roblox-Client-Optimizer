@@ -164,6 +164,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Cache Rust Target
+        id: rust-launcher-cache
+        uses: actions/cache@v3
+        with:
+          path: RCO3Launcher/target
+          key: ${{ matrix.os }}-rco-launcher-rust-target-cache
       - name: Build Linux
         if: matrix.os == 'linux'
         run: |
@@ -236,6 +242,9 @@ jobs:
         with:
           name: rco3launcher-macos-apple
           path: launcher
+      - name: Hash
+        run: |
+          sha512sum launcher/rco3launcher-* > launcher/rco3launcher.sha512
       - name: Upload RCO3 Launcher
         uses: actions/upload-artifact@v3
         with:
