@@ -192,6 +192,25 @@ jobs:
           rustup target add ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
           cargo build --release --target ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
           mv target/${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}/release/rco3launcher${{ matrix.os == 'windows' && '.exe' || '' }} ./rco3launcher-${{ matrix.os == 'linux' && 'linux-x86_64' || matrix.os == 'macos-intel' && 'rco3launcher-darwin-x86_64' || matrix.os == 'macos-apple' && 'rco3launcher-darwin-arm64' || matrix.os == 'windows' && 'rco3launcher-win32-x86_64.exe' }}
+      - name: Install pnpm (Windows)
+        uses: pnpm/action-setup@v2
+        if: matrix.os == 'windows'
+        with:
+          version: 'latest'
+      - name: Install Node.js (Windows)
+        if: matrix.os == 'windows'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: 'RCO3Launcher/metadata/pnpm-lock.yaml'
+      - name: Run Metadata Tool (Windows)
+        if: matrix.os == 'windows'
+        run: |
+          cd RCO3Launcher/metadata
+          pnpm i
+          cd ..
+          node metadata/index.js rco3launcher-win32-x86_64.exe
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
