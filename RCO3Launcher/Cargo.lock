@@ -512,6 +512,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "proctitle"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "924cd8a0de90723d63fed19c5035ea129913a0bc998b37686a67f1eaf6a2aab5"
+dependencies = [
+ "lazy_static",
+ "libc",
+ "winapi",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -524,6 +535,7 @@ dependencies = [
 name = "rco3launcher"
 version = "0.1.0"
 dependencies = [
+ "proctitle",
  "reqwest",
 ]
 

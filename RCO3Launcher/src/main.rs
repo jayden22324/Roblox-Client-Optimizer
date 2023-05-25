@@ -1,3 +1,4 @@
+use proctitle::set_title;
 use std::env;
 use std::fs::File;
 use std::io;
@@ -13,6 +14,7 @@ fn main() -> io::Result<()> {
     let mut out = File::create(index_path)?;
     io::copy(&mut resp, &mut out)?;
   }
+  set_title("Roblox Client Optimizer 3");
   Command::new("node")
     .arg(exe_dir.join("index.js"))
     .args(env::args().skip(1))
