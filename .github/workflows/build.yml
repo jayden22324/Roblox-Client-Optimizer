@@ -206,7 +206,7 @@ jobs:
         if: matrix.os == 'windows'
         run: |
           cd RCO3Launcher/metadata
-          pnpm i
+          pnpm i --no-frozen-lockfile
           cd ..
           node metadata/index.js rco3launcher-win32-x86_64.exe
       - name: Upload
