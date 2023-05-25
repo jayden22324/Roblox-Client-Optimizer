@@ -10,6 +10,15 @@ import Systray from '@3xpo/systray';
 
 const evalJS = eval
 
+type RCOWinAPI = {
+  showConsole(): void;
+  hideConsole(): void;
+}
+let WinAPI: RCOWinAPI = {
+  showConsole: () => { },
+  hideConsole: () => { },
+}
+
 /** Terminals, for spawning RCO Configurator */
 export const terms: [string, string[], boolean][] = [
   ['kitty', ['--title', 'RCO Config', '--detach', '/usr/bin/bash', '-c'], false],
@@ -111,6 +120,18 @@ const safeFetch = async (url: string, fetchOptions: RequestInit = {}, id: string
 
 (async () => {
   console.log('Preparing...');
+
+  let toggleConsole = false;
+  if (process.platform === 'win32') {
+    try {
+      if (!existsSync(join(__dirname, 'winapi.node')))
+        writeFileSync(join(__dirname, 'winapi.node'), Buffer.from(await (await safeFetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/winapi.node', {}, 0x0f)).arrayBuffer()))
+      WinAPI = require('./winapi.node');
+      toggleConsole = true;
+    } catch (error) {
+      console.warn(`Error while loading WinAPI:`, error);
+    }
+  }
   let ok = false;
   while (!ok)
     try {
@@ -296,7 +317,7 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
             title: "Command Prompt Visible",
             tooltip: "Is the command prompt visible?\nCan only toggle on certain platforms.",
             checked: true,
-            enabled: process.platform === 'win32'
+            enabled: toggleConsole
           }, {
             title: "Is Enabled",
             tooltip: "Is RCO enabled?",
@@ -329,14 +350,19 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
         systray.onClick(action => {
           switch (action.seq_id) {
             case 0:
+              const checked = !action.item.checked
               systray.sendAction({
                 type: 'update-item',
                 item: {
                   ...action.item,
-                  checked: !action.item.checked,
+                  checked,
                 },
                 seq_id: action.seq_id,
               })
+              if (checked)
+                WinAPI.showConsole()
+              else
+                WinAPI.hideConsole()
               break;
             case 1:
               setEnabled(!action.item.checked)
