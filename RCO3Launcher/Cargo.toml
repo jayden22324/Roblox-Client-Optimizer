@@ -7,6 +7,7 @@ edition = "2021"
 reqwest = { version = "0.11.18", features = ["blocking", "json"] }
 proctitle = { version = "0.1.1" }
 notify = "6.0.0"
+winapi = { version = "0.3.9", target = ["x86_64-pc-windows-msvc"] }
 
 [[bin]]
 name = "rco3launcher"
