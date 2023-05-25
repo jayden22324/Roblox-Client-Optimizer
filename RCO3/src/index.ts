@@ -296,8 +296,8 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
         const menu = {
           // use .png icon on posix & .ico on windows
           icon: readFileSync(`${__dirname}/animegirl.${process.platform === 'win32' ? 'ico' : 'png'}`).toString('base64'),
-          title: "Test",
-          tooltip: "Tips",
+          title: "RCO",
+          tooltip: "Roblox Client Optimizer",
           items: [{
             title: "Command Prompt Visible",
             tooltip: "Is the command prompt visible?\nCan only toggle on certain platforms.",
