@@ -636,6 +636,7 @@ dependencies = [
  "notify",
  "proctitle",
  "reqwest",
+ "winapi",
 ]
 
 [[package]]
