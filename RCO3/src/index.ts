@@ -114,7 +114,8 @@ const safeFetch = async (url: string, fetchOptions: RequestInit = {}, id: string
 
   const toggleConsole = process.platform === 'win32' && existsSync(join(__dirname, 'console_comm.txt'));;
   const writeCommand = (msg: string = 'teapot') => {
-    writeFileSync(join(__dirname, 'console_comm.txt'), msg);
+    if (execSync(join(__dirname, 'console_comm.txt')))
+      writeFileSync(join(__dirname, 'console_comm.txt'), msg);
   }
   let ok = false;
   while (!ok)
