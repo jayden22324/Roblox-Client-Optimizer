@@ -1,7 +1,7 @@
 if (!process.argv[2]) throw new Error("No input file specified!")
 
 const fs = require('fs');
-const memes = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const memes = JSON.parse(fs.readFileSync(__dirname + '/memes.json', 'utf8'));
 const getMeme = () => memes[Math.floor(Math.random() * memes.length)];
 
 const resedit = require('resedit-cli');
