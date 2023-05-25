@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
+use std::time::Duration;
 use std::{env, thread};
 
 use notify::{event, Config, RecommendedWatcher, RecursiveMode, Watcher};
@@ -64,7 +65,22 @@ fn main() -> io::Result<()> {
   Ok(())
 }
 
-fn watch_file_changes(path: PathBuf) -> () {
+fn perform_action(contents: String) {
+  // switch actions
+  match contents.as_str() {
+    "" => (),
+    "teapot" => println!("I'm a teapot"),
+    "hide-console" => hide_console_window(),
+    "show-console" => show_console_window(),
+    "no-action" => (),
+    "kill" => std::process::exit(0),
+    _ => println!("Unknown Action: {}", contents),
+  }
+}
+
+fn watch_file_changes(listen_path: PathBuf) -> () {
+  let path = listen_path.clone();
+  // event-driven
   thread::spawn(move || loop {
     let (tx, rx) = channel();
     let mut watcher: RecommendedWatcher = Watcher::new(tx, Config::default()).unwrap();
@@ -80,26 +96,31 @@ fn watch_file_changes(path: PathBuf) -> () {
             let mut file = File::open(&path).unwrap();
             let mut contents = String::new();
             file.read_to_string(&mut contents).unwrap();
+            drop(file);
             if contents != "" {
               // write empty string
               let mut file = File::create(&path).unwrap();
               file.write_all(b"").unwrap();
               drop(file);
             }
-            // switch actions
-            match contents.as_str() {
-              "" => (),
-              "teapot" => println!("I'm a teapot"),
-              "hide-console" => hide_console_window(),
-              "show-console" => show_console_window(),
-              "no-action" => (),
-              "kill" => std::process::exit(0),
-              _ => println!("Unknown Action: {}", contents),
-            }
+            // perform action
+            perform_action(contents);
           }
         }
         Err(e) => println!("watch error: {:?}", e),
       }
     }
+  });
+  let path2 = listen_path.clone();
+  thread::spawn(move || loop {
+    let mut file = File::open(&path2).unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    if contents != "" {
+      let mut file = File::create(&path2).unwrap();
+      file.write_all(b"").unwrap();
+    }
+    perform_action(contents);
+    thread::sleep(Duration::from_millis(100));
   });
 }
