@@ -186,8 +186,13 @@ jobs:
         with:
           path: ~/.cargo
           key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('**/Cargo.lock') }}
+      - name: Download last build
+        if: steps.rust-launcher-cache.outputs.cache-hit == 'true' && matrix.os=='windows'
+        run: |
+          cd RCO3Launcher
+          curl -o rco3launcher-win32-x86_64.exe https://roblox-client-optimizer.simulhost.com/launcher/rco3launcher-win32-x86_64.exe
       - name: Build
-        if: steps.rust-launcher-cache.outputs.cache-hit != 'true'
+        if: steps.rust-launcher-cache.outputs.cache-hit != 'true' || matrix.os!='windows'
         run: |
           cd RCO3Launcher
           rustup target add ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
