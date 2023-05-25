@@ -332,7 +332,7 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
           return rt;
         }
 
-        systray.onClick(action => {
+        systray.onClick(async action => {
           switch (action.seq_id) {
             case 0:
               const checked = !action.item.checked
@@ -350,7 +350,14 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
                 writeCommand('hide-console')
               break;
             case 1:
-              setEnabled(!action.item.checked)
+              updating = true;
+              setEnabled(!enabled);
+              redrawMenu();
+              await updateState().catch(v => {
+                console.error('Error updating state:', v);
+                process.exit(1)
+              });
+              updating = false;
               redrawMenu();
               break;
             case 2:
