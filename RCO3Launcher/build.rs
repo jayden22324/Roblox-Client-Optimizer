@@ -38,7 +38,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       .set("OriginalFilename", "RCO3Launcher.exe")
       .set("LegalCopyright", "Copyright (c) 2023 Expo, Kaede & L8X")
       .set("Comments", memes[rng.gen_range(0..memes.len())])
-      .set("InternalName", memes[rng.gen_range(0..memes.len())])
       .set_version_info(winres::VersionInfo::PRODUCTVERSION, 0x0001000000000000);
     res.compile().unwrap();
   }
