@@ -10,7 +10,8 @@ use std::sync::mpsc::channel;
 
 #[cfg(windows)]
 fn hide_console_window() {
-  use winapi::um::winuser::{GetConsoleWindow, ShowWindow, SW_HIDE};
+  use winapi::um::wincon::GetConsoleWindow;
+  use winapi::um::winuser::{ShowWindow, SW_HIDE};
 
   let hwnd = unsafe { GetConsoleWindow() };
   unsafe { ShowWindow(hwnd, SW_HIDE) };
@@ -23,7 +24,8 @@ fn hide_console_window() {
 
 #[cfg(windows)]
 fn show_console_window() {
-  use winapi::um::winuser::{GetConsoleWindow, ShowWindow, SW_SHOW};
+  use winapi::um::wincon::GetConsoleWindow;
+  use winapi::um::winuser::{ShowWindow, SW_SHOW};
 
   let hwnd = unsafe { GetConsoleWindow() };
   unsafe { ShowWindow(hwnd, SW_SHOW) };
