@@ -2,7 +2,7 @@
 	"targets": [
 		{
 			"target_name": "RCOWinAPI",
-			"sources": [ "winapi.cc" ]
+			"sources": [ "src/winapi.cc" ]
 		}
 	]
 }
