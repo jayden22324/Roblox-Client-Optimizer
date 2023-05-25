@@ -179,7 +179,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: RCO3Launcher/target
-          key: ${{ matrix.os }}-rco-launcher-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.os }}-rco-launcher${{matrix.os=='windows'&&hashFiles('RCO3Launcher/src')||''}}-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
       - name: Cache Home -> Cargo
         id: rust-launcher-homecargo-cache
         uses: actions/cache@v3
@@ -187,6 +187,7 @@ jobs:
           path: ~/.cargo
           key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
+        if: steps.rust-launcher-cache.outputs.cache-hit != 'true'
         run: |
           cd RCO3Launcher
           rustup target add ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
