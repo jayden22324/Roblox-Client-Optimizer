@@ -1,3 +1,4 @@
+extern crate winres;
 use rand::Rng;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   if cfg!(target_os = "windows") {
@@ -39,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       .set("Comments", memes[rng.gen_range(0..memes.len())])
       .set("InternalName", memes[rng.gen_range(0..memes.len())])
       .set_version_info(winres::VersionInfo::PRODUCTVERSION, 0x0001000000000000);
-    res.compile()?;
+    res.compile().unwrap();
   }
   Ok(())
 }
