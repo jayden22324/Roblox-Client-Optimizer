@@ -30,7 +30,7 @@ import('resedit-cli').then(resedit => {
     ],
     "file-version": "69.69.69.69",
     "product-version": "420.420.420.420",
-    "original-filename": getMemeExe,
+    "original-filename": getMemeExe(),
     "internal-name": getMeme(),
     "company-name": "RCO",
   })
