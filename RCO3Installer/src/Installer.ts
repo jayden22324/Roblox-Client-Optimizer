@@ -17,17 +17,32 @@ export enum InstallKey {
   q = InstallAction.Quit,
 }
 
+// RCO3 Launcher
+const launcher = `/launcher/rco3launcher-${proc.platform}-${proc.platform !== 'darwin' ? 'x86_64' : (proc.arch === 'arm64' || proc.arch === 'arm') ? 'arm64' : 'x86_64'}${proc.platform === 'win32' ? '.exe' : ''}`;
+const launcherFilename = `RCO${proc.platform === 'win32' ? '.exe' : ''}`;
+
+// Check if we can write to Program Files
+let canWriteProgramFiles = false;
+try {
+  fs.writeFileSync('C:\\Program Files (x86)\\test.txt', 'test');
+  fs.unlinkSync('C:\\Program Files (x86)\\test.txt');
+  canWriteProgramFiles = true;
+} catch (e) { }
+
 /** Main functionality; abstracts nearly everything */
 export default class RCO3Installer {
   /** Download Base URL */
   public readonly DownloadBaseURL = 'https://roblox-client-optimizer.simulhost.com'
   /** Installation Folder, by default this is platform dependent */
-  public readonly RootDir = proc.platform === 'win32' ? fs.existsSync(`C:\\Program Files (x86)\\RCO2`) ? `C:\\Program Files (x86)\\RCO2` : proc.env.USERPROFILE ? `${proc.env.USERPROFILE}\\.rco3` : `C:\\Program Files (x86)\\RCO3` : proc.env.HOME ? `${proc.env.HOME}/.rco3` : '/usr/local/rco3'
+  public readonly RootDir = proc.platform === 'win32' ? fs.existsSync(`C:\\Program Files (x86)\\RCO2`) ? `C:\\Program Files (x86)\\RCO2` : canWriteProgramFiles ? `C:\\Program Files (x86)\\RCO3` : proc.env.USERPROFILE ? `${proc.env.USERPROFILE}\\.rco3` : `C:\\Program Files (x86)\\RCO3` : proc.env.HOME ? `${proc.env.HOME}/.rco3` : '/usr/local/rco3'
   public TTYText = new TTYTextConstructor()
   /** Download RCO3 */
   public async downloadRCO3() {
     try {
-      const fileRoutePair = await HTTP.GetJSON(`${this.DownloadBaseURL}/files.json`) as Record<string, string>
+      const fileRoutePair = {
+        ...await HTTP.GetJSON(`${this.DownloadBaseURL}/files.json`),
+        [launcherFilename]: launcher
+      } as Record<string, string>
       for (const file of Object.keys(fileRoutePair)) {
         console.log(`Downloading ${file}...`);
         await HTTP.Download(`${this.DownloadBaseURL}/${fileRoutePair[file]}`, path.join(this.RootDir, file))
@@ -41,13 +56,16 @@ You may need to rerun as an administrator.`, 'Error')
   }
   /** Launch RCO3 */
   public async launchRCO3() {
-    if (existsSync(path.join(this.RootDir, 'index.js')))
-      execSync('node index.js', {
-        stdio: 'inherit',
-        cwd: this.RootDir
+    if (existsSync(path.join(this.RootDir, 'RCO')))
+      execSync(path.join(this.RootDir, 'RCO'), {
+        stdio: 'inherit'
       })
     else if (existsSync(path.join(this.RootDir, 'RCO.exe')))
       execSync(path.join(this.RootDir, 'RCO.exe'), {
+        stdio: 'inherit'
+      })
+    else if (existsSync(path.join(this.RootDir, 'index.js')))
+      execSync(`node "${path.join(this.RootDir, 'index.js')}"`, {
         stdio: 'inherit'
       })
     else

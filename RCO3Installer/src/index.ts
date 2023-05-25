@@ -111,7 +111,7 @@ Please either remove your system's NodeJS installation, or upgrade it to at leas
       installer.printInstallationStep('Ensuring RCO3 Directory Exists');
       installer.ensureDir()
       installer.printInstallationStep('Downloading RCO3');
-      await installer.downloadRCO3() // todo
+      await installer.downloadRCO3()
       if (proc.platform === 'win32') {
         installer.printInstallationStep('Adding RCO3 to Registry');
         await installer.addToStartupRegistry()
