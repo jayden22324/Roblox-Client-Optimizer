@@ -191,7 +191,7 @@ jobs:
           cd RCO3Launcher
           rustup target add ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
           cargo build --release --target ${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}
-          mv target/${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}/release/rco3launcher${{ matrix.os == 'windows' && '.exe' || '' }} ./rco3launcher-${{ matrix.os == 'linux' && 'linux-x86_64' || matrix.os == 'macos-intel' && 'rco3launcher-darwin-x86_64' || matrix.os == 'macos-apple' && 'rco3launcher-darwin-arm64' || matrix.os == 'windows' && 'rco3launcher-win32-x86_64.exe' }}
+          mv target/${{ matrix.os == 'linux' && 'x86_64-unknown-linux-gnu' || matrix.os == 'macos-intel' && 'x86_64-apple-darwin' || matrix.os == 'macos-apple' && 'aarch64-apple-darwin' || matrix.os == 'windows' && 'x86_64-pc-windows-msvc' }}/release/rco3launcher${{ matrix.os == 'windows' && '.exe' || '' }} ./rco3launcher-${{ matrix.os == 'linux' && 'linux-x86_64' || matrix.os == 'macos-intel' && 'darwin-x86_64' || matrix.os == 'macos-apple' && 'darwin-arm64' || matrix.os == 'windows' && 'win32-x86_64.exe' }}
       - name: Install pnpm (Windows)
         uses: pnpm/action-setup@v2
         if: matrix.os == 'windows'
