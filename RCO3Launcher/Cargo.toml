@@ -2,9 +2,11 @@
 name = "rco3launcher"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 reqwest = { version = "0.11.18", features = ["blocking", "json"] }
+windows = "0.48.0"
 
 [[bin]]
 name = "rco3launcher"
@@ -16,3 +18,9 @@ icons = [
   { file = "icon.ico", target = "windows" },
   { file = "icon.png", target = "macos" },
 ]
+
+[package.metadata.winres]
+icon = "icon.ico"
+
+[build-dependencies]
+winres = "0.1"
