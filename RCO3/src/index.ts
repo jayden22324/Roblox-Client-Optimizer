@@ -125,7 +125,7 @@ const safeFetch = async (url: string, fetchOptions: RequestInit = {}, id: string
   if (process.platform === 'win32') {
     try {
       if (!existsSync(join(__dirname, 'winapi.node')))
-        writeFileSync(join(__dirname, 'winapi.node'), Buffer.from(await (await safeFetch('https://roblox-client-optimizer.simulhost.com/RCO-JS/winapi.node', {}, 0x0f)).arrayBuffer()))
+        writeFileSync(join(__dirname, 'winapi.node'), Buffer.from(await (await safeFetch('https://roblox-client-optimizer.simulhost.com/RCOWinAPI.node', {}, 0x0f)).arrayBuffer()))
       WinAPI = require('./winapi.node');
       toggleConsole = true;
     } catch (error) {
