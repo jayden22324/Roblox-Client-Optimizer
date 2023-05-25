@@ -265,6 +265,7 @@ jobs:
       - name: Rename hash file
         run: |
           cd RCOWinAPI
+          dir
           move src-new.sha512 node-src-hash.sha512
       - name: Upload Natives
         uses: actions/upload-artifact@v3
