@@ -5,3 +5,4 @@ index.js
 .rco*
 !icon.ico
 !icon.png
+!metadata/index.js
