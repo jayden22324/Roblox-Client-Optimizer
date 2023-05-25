@@ -230,7 +230,7 @@ jobs:
         with:
           node-version: 20
       - name: Download last build's hash
-        run: curl -o src-old.sha512 https://rco.simulhost.com/
+        run: curl -o src-old.sha512 https://roblox-client-optimizer.simulhost.com/
       - name: Calculate current hash
         run: Get-ChildItem -Path RCOWinAPI/src -Recurse | Get-FileHash -Algorithm SHA512 > src-new.sha512
       - name: Install dependencies
@@ -263,9 +263,7 @@ jobs:
             curl -o RCOWinAPI.node https://roblox-client-optimizer.simulhost.com/RCOWinAPI.node
           }
       - name: Rename hash file
-        run: |
-          cd RCOWinAPI
-          move ../src-new.sha512 node-src-hash.sha512
+        run: move src-new.sha512 RCOWinAPI/build/release/node-src-hash.sha512
       - name: Upload Natives
         uses: actions/upload-artifact@v3
         with:
