@@ -230,9 +230,9 @@ jobs:
         with:
           node-version: 20
       - name: Download last build's hash
-        run: curl -o src-old.sha512 https://rco.simulhost.com/
+        run: curl -o src-old.sha512 https://rco.simulhost.com/node-src-hash.sha512
       - name: Calculate current hash
-        run: Get-ChildItem -Path src -Recurse | Get-FileHash -Algorithm SHA512 > src-new.sha512
+        run: Get-ChildItem -Path RCOWinAPI/src -Recurse | Get-FileHash -Algorithm SHA512 > src-new.sha512
       - name: Install dependencies
         run: |
           if (Compare-Object (Get-Content src-old.sha512) (Get-Content src-new.sha512)) {
