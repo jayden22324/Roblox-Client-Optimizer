@@ -24,3 +24,4 @@ icon = "icon.ico"
 
 [build-dependencies]
 winres = "0.1"
+rand = "0.8.5"

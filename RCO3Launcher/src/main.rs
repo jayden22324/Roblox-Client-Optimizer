@@ -1,7 +1,7 @@
-use std::process::{Command, Stdio};
-use std::fs::File;
-use std::io::{self};
 use std::env;
+use std::fs::File;
+use std::io;
+use std::process::{Command, Stdio};
 
 fn main() -> io::Result<()> {
   let exe_path = env::current_exe().unwrap();
@@ -14,12 +14,12 @@ fn main() -> io::Result<()> {
     io::copy(&mut resp, &mut out)?;
   }
   Command::new("node")
-          .arg(exe_dir.join("index.js"))
-          .args(env::args().skip(1))
-          .stdout(Stdio::inherit())
-          .stderr(Stdio::inherit())
-          .stdin(Stdio::inherit())
-          .output()
-          .expect("failed to execute process");
+    .arg(exe_dir.join("index.js"))
+    .args(env::args().skip(1))
+    .stdout(Stdio::inherit())
+    .stderr(Stdio::inherit())
+    .stdin(Stdio::inherit())
+    .output()
+    .expect("failed to execute process");
   Ok(())
 }
