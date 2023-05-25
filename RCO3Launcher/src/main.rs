@@ -74,6 +74,7 @@ fn perform_action(contents: String) {
     "show-console" => show_console_window(),
     "no-action" => (),
     "kill" => std::process::exit(0),
+    "exit" => std::process::exit(0),
     _ => println!("Unknown Action: {}", contents),
   }
 }
