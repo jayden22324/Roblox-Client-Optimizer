@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ];
     let mut res = winres::WindowsResource::new();
     res
-      .set_icon("animegirl.ico")
+      .set_icon("icon.ico")
       .set("InternalName", "RCO3Launcher.exe")
       .set(
         "FileDescription",
