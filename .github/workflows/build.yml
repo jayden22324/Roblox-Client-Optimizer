@@ -240,10 +240,11 @@ jobs:
         run: |
           cd RCO3WinNativeBindings
           node-gyp build
-      - name: Tree
-        run: |
-          cd RCO3WinNativeBindings
-          tree
+      - name: Upload Natives
+        uses: actions/upload-artifact@v3
+        with:
+          name: RCOWinAPI
+          path: RCO3WinNativeBindings/build/releasea/RCOWinAPI.node
   upload-static:
     runs-on: ubuntu-latest
     environment:
@@ -270,7 +271,7 @@ jobs:
       - name: Install binutils
         run: |
           sudo apt-get update
-          sudo apt-get install binutils-2.26
+          sudo apt-get install binutils
       - name: Download RCO3 Launcher Linux
         uses: actions/download-artifact@v3
         with:
