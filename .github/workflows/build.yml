@@ -220,61 +220,6 @@ jobs:
         with:
           name: rco3launcher-${{matrix.os}}
           path: RCO3Launcher/rco3launcher-*
-  build-windows-native:
-    runs-on: windows-latest
-    environment:
-      name: "Artifact rco3nativewin"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      - name: Download last build's hash
-        run: curl -o src-old.sha512 https://roblox-client-optimizer.simulhost.com/node-src-hash.sha512
-      - name: Calculate current hash
-        run: Get-ChildItem -Path RCOWinAPI/src -Recurse | Get-FileHash -Algorithm SHA512 > src-new.sha512
-      - name: Install dependencies
-        run: |
-          if (Compare-Object (Get-Content src-old.sha512) (Get-Content src-new.sha512)) {
-            pnpm i -g node-gyp
-          } else {
-            echo 'Hashes are equal. Skip.'
-          }
-      - name: Configure Node GYP
-        run: |
-          if (Compare-Object (Get-Content src-old.sha512) (Get-Content src-new.sha512)) {
-            cd RCOWinAPI
-            node-gyp configure
-          } else {
-            echo 'Hashes are equal. Skip.'
-          }
-      - name: Build Node GYP
-        run: |
-          if (Compare-Object (Get-Content src-old.sha512) (Get-Content src-new.sha512)) {
-            cd RCOWinAPI
-            node-gyp build
-          } else {
-            echo 'Hashes are equal. Downloading last build.'
-            cd RCOWinAPI
-            mkdir build
-            cd build
-            mkdir release
-            cd release
-            curl -o RCOWinAPI.node https://roblox-client-optimizer.simulhost.com/RCOWinAPI.node
-          }
-      - name: Rename hash file
-        run: move src-new.sha512 RCOWinAPI/build/release/node-src-hash.sha512
-      - name: Upload Natives
-        uses: actions/upload-artifact@v3
-        with:
-          name: RCOWinAPI
-          path: RCOWinAPI/build/release
   upload-static:
     runs-on: ubuntu-latest
     environment:
@@ -340,7 +285,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: "Artifact page"
-    needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static, merge-rco3-launcher, build-windows-native]
+    needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static, merge-rco3-launcher]
     steps:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -378,11 +323,6 @@ jobs:
         with:
           name: librco3-docs
           path: lib/docs
-      - name: Download Natives
-        uses: actions/download-artifact@v3
-        with:
-          name: RCOWinAPI
-          path: .
       - name: Download RCO3Launcher
         uses: actions/download-artifact@v3
         with:

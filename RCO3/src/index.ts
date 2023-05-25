@@ -10,15 +10,6 @@ import Systray from '@3xpo/systray';
 
 const evalJS = eval
 
-type RCOWinAPI = {
-  showConsole(): void;
-  hideConsole(): void;
-}
-let WinAPI: RCOWinAPI = {
-  showConsole: () => { },
-  hideConsole: () => { },
-}
-
 /** Terminals, for spawning RCO Configurator */
 export const terms: [string, string[], boolean][] = [
   ['kitty', ['--title', 'RCO Config', '--detach', '/usr/bin/bash', '-c'], false],
@@ -121,16 +112,10 @@ const safeFetch = async (url: string, fetchOptions: RequestInit = {}, id: string
 (async () => {
   console.log('Preparing...');
 
-  let toggleConsole = false;
-  if (process.platform === 'win32') {
-    try {
-      if (!existsSync(join(__dirname, 'winapi.node')))
-        writeFileSync(join(__dirname, 'winapi.node'), Buffer.from(await (await safeFetch('https://roblox-client-optimizer.simulhost.com/RCOWinAPI.node', {}, 0x0f)).arrayBuffer()))
-      WinAPI = evalJS(`require('./winapi.node')`);
-      toggleConsole = true;
-    } catch (error) {
-      console.warn(`Error while loading WinAPI:`, error);
-    }
+  const toggleConsole = process.platform === 'win32' && existsSync(join(__dirname, 'console_comm.txt'));;
+  const writeCommand = (msg: string = 'teapot') => {
+    if (toggleConsole)
+      writeFileSync(join(__dirname, 'console_comm.txt'), msg);
   }
   let ok = false;
   while (!ok)
@@ -360,9 +345,9 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
                 seq_id: action.seq_id,
               })
               if (checked)
-                WinAPI.showConsole()
+                writeCommand('show-console')
               else
-                WinAPI.hideConsole()
+                writeCommand('hide-console')
               break;
             case 1:
               setEnabled(!action.item.checked)
@@ -385,6 +370,10 @@ ${ansi.reset()}${ansi.gray()}Press c to enter the configuration utility${ansi.re
       const key = await tty.readkey(true)
 
       switch (key) {
+        case 'z':
+          writeCommand();
+          await new Promise(r => setTimeout(r, 100))
+          break;
         case 't':
           if (currentMenu === CurrentMenu.Main) {
             updating = true;
