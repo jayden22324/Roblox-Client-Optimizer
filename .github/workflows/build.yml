@@ -310,10 +310,6 @@ jobs:
         with:
           name: assets
           path: .
-      - name: Copy icons
-        run:
-          cp img/animegirl-round.ico ./animegirl.ico
-          cp img/animegirl-round.png ./animegirl.png
       - name: Create Important Hashes
         run: |
           sha512sum RCO.exe > RCOVersion
