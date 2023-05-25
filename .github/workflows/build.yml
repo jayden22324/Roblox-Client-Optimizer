@@ -202,8 +202,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: 'RCO3Launcher/metadata/pnpm-lock.yaml'
       - name: Run Metadata Tool (Windows)
         if: matrix.os == 'windows'
         run: |
@@ -239,6 +237,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-rco3-launcher]
     steps:
+      - name: Install binutils
+        run: |
+          sudo apt-get update
+          sudo apt-get install binutils-2.26
       - name: Download RCO3 Launcher Linux
         uses: actions/download-artifact@v3
         with:
@@ -259,6 +261,12 @@ jobs:
         with:
           name: rco3launcher-macos-apple
           path: launcher
+      - name: Strip Windows
+        run: |
+          strip launcher/rco3launcher-linux-x86_64
+      - name: Strip Linux
+        run: |
+          strip launcher/rco3launcher-win32-x86_64.exe
       - name: Hash
         run: |
           sha512sum launcher/rco3launcher-* > launcher/rco3launcher.sha512
