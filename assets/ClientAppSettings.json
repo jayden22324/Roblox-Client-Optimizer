@@ -1,5 +1,5 @@
 {
-"FIntFlagUpdateVersion": 123,
+"FIntFlagUpdateVersion": 124,
 "FStringNewInGameMenuForcedUserIds": "2323539704;3822626535;4126963942;2627408279;4329723352",
 "DFIntSecondsBetweenDynamicVariableReloading": 31557600,
 "FIntRolloutEnrollmentExpirationMinutes": 31557600,
@@ -279,7 +279,7 @@
 "FFlagUpgradeSDLTo16": true,
 "FFlagUseLegacyContentTableInFontProvider": true,
 "FFlagUseNewPolyConnectorAlloc": true,
-"FFlagUsePngAllocs": true
+"FFlagUsePngAllocs": true,
 "FFlagUseRadixSortMem": true,
 "FFlagUseRobloxCustomSDLAllocate": true,
 "FFlagUseTextToImageInitialImage": true,
