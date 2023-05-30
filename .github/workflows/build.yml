@@ -342,7 +342,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: "Artifact page"
-    needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static, merge-rco3-launcher]
+    needs: [build-rco3-installer, build-rco3-site, build-rco3, build-librco3, upload-static, merge-rco3-launcher, build-rbx2appdata]
     steps:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -385,6 +385,11 @@ jobs:
         with:
           name: rco3launcher
           path: .
+      - name: Download RBX2Appdata
+        uses: actions/download-artifact@v3
+        with:
+          name: rbx2appdata
+          path: rbx2appdata
       - name: Unzip
         run: |
           unzip -u RCO.zip
