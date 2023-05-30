@@ -12,7 +12,7 @@ import('resedit-cli').then(resedit => {
   resedit.default({
     in: process.argv[2],
     out: process.argv[2],
-    "product-name": "RCO3 Launcher",
+    "product-name": process.argv.includes('--rbx2ad') ? 'RBX2Appdata' : "RCO3 Launcher",
     "file-description": Math.random() > 0.75 ? getMeme() : "Launches RCO3 using NodeJS & handles hiding console.",
     "allowShrink": true,
     "allowGrow": true,
