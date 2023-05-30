@@ -58,8 +58,8 @@ fn main() -> std::io::Result<()> {
     match arg.as_str() {
       "--rco2" => remove_rco2(),
       "--rbx" => symlink_roblox(),
-      _ => symlink_roblox(),
+      _ => (),
     }
   }
   Ok(())
-} 
+}
