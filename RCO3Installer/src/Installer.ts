@@ -33,8 +33,12 @@ try {
 export default class RCO3Installer {
   /** Download Base URL */
   public readonly DownloadBaseURL = 'https://roblox-client-optimizer.simulhost.com'
+  /** Runs the Roblox Mover */
+  public async runRobloxMover() {
+    // tba
+  }
   /** Installation Folder, by default this is platform dependent */
-  public readonly RootDir = proc.platform === 'win32' ? fs.existsSync(`C:\\Program Files (x86)\\RCO2`) ? `C:\\Program Files (x86)\\RCO2` : canWriteProgramFiles ? `C:\\Program Files (x86)\\RCO3` : proc.env.USERPROFILE ? `${proc.env.USERPROFILE}\\.rco3` : `C:\\Program Files (x86)\\RCO3` : proc.env.HOME ? `${proc.env.HOME}/.rco3` : '/usr/local/rco3'
+  public readonly RootDir = proc.platform === 'win32' ? proc.env.USERPROFILE ? `${proc.env.USERPROFILE}\\.rco3` : `C:\\Program Files (x86)\\RCO3` : proc.env.HOME ? `${proc.env.HOME}/.rco3` : '/usr/local/rco3'
   public TTYText = new TTYTextConstructor()
   /** Download RCO3 */
   public async downloadRCO3() {

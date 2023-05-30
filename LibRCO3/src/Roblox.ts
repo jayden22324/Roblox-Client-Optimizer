@@ -19,7 +19,7 @@ export class Roblox {
       const possible = [
         process.env.ROBLOX,
         path.resolve(process.env.LOCALAPPDATA ?? '', 'Roblox'),
-        'C:/Program Files (x86)/Roblox',
+        fs.statSync('C:/Program Files (x86)/Roblox').isSymbolicLink() ? null : 'C:/Program Files (x86)/Roblox',
         path.resolve(process.env.APPDATA ?? '', 'Roblox'),
       ].filter(v => v && exists(v) && exists(v + '/Versions')) as string[];
       if (possible.length > 0)

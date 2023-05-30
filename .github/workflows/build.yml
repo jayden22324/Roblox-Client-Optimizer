@@ -179,13 +179,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: RCO3Launcher/target
-          key: ${{ matrix.os }}-rco-launcher${{matrix.os=='windows'&&hashFiles('RCO3Launcher/src')||''}}-rust-target-cache-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.os }}-rco-launcher${{matrix.os=='windows'&&hashFiles('RCO3Launcher/src')||''}}-rust-target-cache-${{ hashFiles('RCO3Launcher/Cargo.lock') }}
       - name: Cache Home -> Cargo
         id: rust-launcher-homecargo-cache
         uses: actions/cache@v3
         with:
           path: ~/.cargo
-          key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('RCO3Launcher/Cargo.lock') }}
       - name: Download last build
         if: steps.rust-launcher-cache.outputs.cache-hit == 'true' && matrix.os=='windows'
         run: |
@@ -220,6 +220,62 @@ jobs:
         with:
           name: rco3launcher-${{matrix.os}}
           path: RCO3Launcher/rco3launcher-*
+  build-rbx2appdata:
+    environment:
+      name: "Artifact rbx2appdata-${{matrix.os}}"
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cache rbx2appdata -> Target
+        id: rust-rbx2appdata-cache
+        uses: actions/cache@v3
+        with:
+          path: RBX2Appdata/target
+          key: ${{ matrix.os }}-${{hashFiles('RBX2Appdata/src')}}-rust-target-cache-${{ hashFiles('RBX2Appdata/Cargo.lock') }}
+      - name: Cache Home -> Cargo
+        id: rust-rbx2appdata-homecargo-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo
+          key: ${{ matrix.os }}-rco-launcher-rust-home-cargo-cache-${{ hashFiles('RBX2Appdata/Cargo.lock') }}
+      - name: Download last build
+        if: steps.rust-rbx2appdata-cache.outputs.cache-hit == 'true'
+        run: |
+          cd RBX2Appdata
+          curl -o rbx2appdata.exe https://roblox-client-optimizer.simulhost.com/rbx2appdata.exe
+      - name: Build
+        if: steps.rust-rbx2appdata-cache.outputs.cache-hit != 'true'
+        run: |
+          cd RBX2Appdata
+          cargo build --release
+          mv target/release/rbx2appdata.exe ./rbx2appdata.exe
+      - name: Install pnpm (Windows)
+        uses: pnpm/action-setup@v2
+        if: matrix.os == 'windows'
+        with:
+          version: 'latest'
+      - name: Install Node.js (Windows)
+        if: matrix.os == 'windows'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Run Metadata Tool (Windows)
+        if: matrix.os == 'windows'
+        run: |
+          cd RCO3Launcher/metadata
+          pnpm i --no-frozen-lockfile
+          cd ../../RBX2Appdata
+          node ../RCO3Launcher/metadata/index.js rbx2appdata.exe
+          resedit rbx2appdata.exe rbx2appdata.exe --raw 24,1,@res/app.manifest
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: rbx2appdata
+          path: RBX2Appdata/rbx2appdata.exe
   upload-static:
     runs-on: ubuntu-latest
     environment:
