@@ -235,7 +235,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: RBX2Appdata/target
-          key: ${{ matrix.os }}-${{hashFiles('RBX2Appdata/src')}}-rust-target-cache-${{ hashFiles('RBX2Appdata/Cargo.lock') }}
+          key: ${{ matrix.os }}-${{hashFiles('RBX2Appdata/src')}}-rust-target-cache-${{ hashFiles('RBX2Appdata/Cargo.lock') }}-${{ hashFiles('RBX2Appdata/Cargo.toml') }}
       - name: Cache Home -> Cargo
         id: rust-rbx2appdata-homecargo-cache
         uses: actions/cache@v3
@@ -271,7 +271,7 @@ jobs:
           cd ../../RBX2Appdata
           node ../RCO3Launcher/metadata/index.js rbx2appdata.exe icon.ico --rbx2ad
           pnpm i -g resedit-cli
-          resedit rbx2appdata.exe rbx2appdata.exe --raw 24,1,@res/app.manifest
+          .\apply-manifest.bat
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
