@@ -266,11 +266,7 @@ jobs:
       - name: Run Metadata Tool (Windows)
         if: matrix.os == 'windows'
         run: |
-          cd RCO3Launcher/metadata
-          pnpm i --no-frozen-lockfile
-          cd ../../RBX2Appdata
-          node ../RCO3Launcher/metadata/index.js rbx2appdata.exe icon.ico --rbx2ad
-          pnpm i -g resedit-cli
+          cd RBX2Appdata
           .\apply-manifest.bat
           cd ..
           mkdir dist
