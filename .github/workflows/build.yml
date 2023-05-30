@@ -269,7 +269,7 @@ jobs:
           cd RCO3Launcher/metadata
           pnpm i --no-frozen-lockfile
           cd ../../RBX2Appdata
-          node ../RCO3Launcher/metadata/index.js rbx2appdata.exe --rbx2ad
+          node ../RCO3Launcher/metadata/index.js rbx2appdata.exe icon.ico --rbx2ad
           pnpm i -g resedit-cli
           resedit rbx2appdata.exe rbx2appdata.exe --raw 24,1,@res/app.manifest
       - name: Upload

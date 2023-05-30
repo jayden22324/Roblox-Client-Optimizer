@@ -1,3 +1,5 @@
+// Copyright (c) 2023 Expo.
+
 use proctitle::set_title;
 use std::fs::File;
 use std::io::{self, Read, Write};
