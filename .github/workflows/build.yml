@@ -272,11 +272,15 @@ jobs:
           node ../RCO3Launcher/metadata/index.js rbx2appdata.exe icon.ico --rbx2ad
           pnpm i -g resedit-cli
           .\apply-manifest.bat
+          cd ..
+          mkdir dist
+          mv RBX2Appdata/rbx2appdata.exe dist/rbx2appdata.exe
+          echo ${{hashFiles('RBX2Appdata/src')}}-${{hashFiles('RBX2Appdata/icon.ico')}}-${{hashFiles('RBX2Appdata/Cargo.lock')}}-${{hashFiles('RBX2Appdata/Cargo.toml')}} > dist/rbx2appdata.hash
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: rbx2appdata
-          path: RBX2Appdata/rbx2appdata.exe
+          path: dist
   upload-static:
     runs-on: ubuntu-latest
     environment:
