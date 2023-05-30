@@ -8,3 +8,6 @@ edition = "2021"
 [[bin]]
 name = "rbx2appdata"
 path = "src/main.rs"
+
+[package.metadata]
+msvc = { manifest_path = "res/app.manifest" }
